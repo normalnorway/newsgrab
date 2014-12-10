@@ -1,4 +1,5 @@
 from lxml import etree
+from datetime import datetime
 
 
 class ParserBase (object):
@@ -39,7 +40,22 @@ class ParserBase (object):
 class OpenGraphParser (ParserBase):
     '''Parse Open Graph protocol metadata - http://ogp.me/'''
 
-    def parse_opengraph (self):
+    def itemprop (self, key, elem=None):
+        if elem:
+            expr = "//%s[@itemprop='%s']/text()" % (elem, key)
+        else:
+            expr = "//*[@itemprop='%s']/text()" % key
+        return self.tree.xpath(expr)[0].strip()
+        # @todo warn if multiple elements matches? use itemprops for that?
+
+    def date (self):    # @todo parse_data || get_date
+        datestr = self.itemprop ('datePublished')
+        return datetime.strptime (datestr, '%Y-%m-%dT%H:%M:%S')
+        # %T is equivalent to %H:%M:%S
+        # ... but not supported in Python :(
+
+    def parse (self):
+        # @todo assert that all metadata is there. if not check itemprop
         #assert self.is_supported()  # @todo warn instead?
         L = self.tree.xpath ('/html/head/meta[starts-with(@property,"og:")]')
         #return dict (e.values() for e in L)
@@ -51,10 +67,5 @@ class OpenGraphParser (ParserBase):
         return meta
 
     # @note abcnyheter uses meta.property=og:* but don't have xmlns,
-    #       so this check is useless
     def is_supported (self):
         return self.tree.xpath('/html')[0].get('xmlns:og') == 'http://ogp.me/ns#'
-
-    # Need this to use OpenGraphParser in stand-alone-mode
-#    def parse (self):
-#        return self.parse_opengraph()

@@ -9,5 +9,5 @@ print 'DATE\t',     meta['date']
 print 'TITLE\t',    meta['title']
 print 'URL\t',      meta['url']
 print 'IMAGE\t',    meta['image']
-print 'SUMMARY\n',  meta['summary']
+print 'SUMMARY:\n', meta['summary']
 print

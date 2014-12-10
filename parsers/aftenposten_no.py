@@ -8,13 +8,11 @@ xmlns:og="http://ogp.me/ns#">
 
 from datetime import datetime, timedelta
 from . import OpenGraphParser
-#import OpenGraphParser  ??
 
 
 class Parser (OpenGraphParser):
     def parse (self):
-        #meta = OpenGraphParser.parse (self)
-        meta = self.parse_opengraph()
+        meta = super(Parser,self).parse()
 
         # div.dateline > span.date > time.published
         tmp = self.tree.xpath ('//div[contains(@class,"dateline")]/span/time[@class="published" and @pubdate="pubdate"]/@datetime')[0]
