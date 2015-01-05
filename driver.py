@@ -18,11 +18,12 @@ class ParserFactory (object):
 #            domain = domain[4:]
 #        pyid = domain.replace('.', '_')
         pyid = domain_to_pyid (urlparse(url).netloc)
-        parser = self.parsers.get (pyid)
+        parser = self.parsers.get (pyid, False)
         if parser:
             print 'hit', parser
             return parser
-        if os.path.exists (os.path.join ('parsers', pyid+'.py')):
+        basedir = os.path.dirname (__file__)
+        if os.path.exists (os.path.join (basedir, 'parsers', pyid+'.py')):
             module = __import__ ('parsers.'+pyid, fromlist=['Parser'])
             if not load: url = None
             self.parsers[pyid] = parser = module.Parser (url)
