@@ -1,6 +1,4 @@
-#from urlparse import urlparse
 from driver import ParserFactory
-from driver import domain_to_pyid   # @todo move to this file?
 
 
 _factory = ParserFactory()
@@ -20,10 +18,10 @@ def get_metadata_as_json (url):
 #import json
 #meta['date'] = str (meta['date'])
 #json.dump (meta, sys.stdout)
-#print
 
 
+#from driver import domain_to_pyid   # @todo move to this file?
 #domain = sys.argv[1]
-#parser = factory.get ('http://' + domain)
+#parser = factory.get ('http://' + domain, load_url=False)
 #parser.set_html (open ('testdata/%s.html' % domain_to_pyid(domain)).read())
 #meta = parser.get()
