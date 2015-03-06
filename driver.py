@@ -1,6 +1,10 @@
+"""
+@todo rename parserfactory.py?
+"""
+
 import os
 import logging
-from urlparse import urlparse
+from urlparse import urlsplit
 
 logger = logging.getLogger (__name__)
 
@@ -16,28 +20,30 @@ def domain_to_pyid (domain):
         domain = domain[4:]
     return domain.replace('.', '_')
 
+def domain_to_parser_id (domain):
+    return domain_to_pyid (domain)
+
 
 class ParserFactory (object):
     parsers = {}    # Parser object cache
 
+    #def get (self, url, load_url=True, urlobj=None):
     def get (self, url, load_url=True):
-        #pyid = domain_to_pyid (urlparse(url).netloc)
-        urlobj = urlparse(url)
-        pyid = domain_to_pyid (urlobj.netloc)
+        urlobj = urlsplit (url)
+        pyid = domain_to_parser_id (urlobj.hostname)
+
+        # Try to load from cache
         parser = self.parsers.get (pyid, False)
-        if parser:
-            return parser
+        if parser: return parser
+        # @todo what about load_url?
 
         # Try to load parser from parsers/<pyid>.py
         try:
             module = __import__ ('parsers.'+pyid, fromlist=['Parser'])
-            assert module
             self.parsers[pyid] = module.Parser (url if load_url else None)
             return self.parsers[pyid]
         except ImportError:
-            pass
-
-        logger.warning ('No parser found for: ' + urlobj.netloc)
+            logger.warning ('No parser found for: ' + urlobj.hostname)
 
         # No parser found, fall back to OpenGraph parser.
         # @todo can check if it's support (if load_url=True).

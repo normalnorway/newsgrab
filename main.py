@@ -1,3 +1,4 @@
+# @todo rename cli.py
 import sys
 from __init__ import get_metadata
 

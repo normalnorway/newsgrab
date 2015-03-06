@@ -1,7 +1,6 @@
-# encoding: utf-8
 ''' abcnyheter.no
 
-Supports OpenGraph (but without xmlns:og).
+Supports OpenGraph (but xmlns:og is missing).
 
 Supports schema.org:
 - http://schema.org/NewsArticle
@@ -10,18 +9,16 @@ Supports schema.org:
 - http://schema.org/Person  (Author)
 
 # Other usefull elements:
-<link rel="canonical" href="http://www.abcnyheter.no/nyheter/2014/02/28/brukte-pressen-til-lokke-narko-siktet-politiker-i-felle" />
-<meta name="keywords"      content="Bergen,Eirik Jensen,erik skutle,hasj,Høyre,John Christian Elden,narkotika,politiet,Norge,nyheter" />
-<meta name="news_keywords" content="Bergen,Eirik Jensen,erik skutle,hasj,Høyre,John Christian Elden,narkotika,politiet,Norge,nyheter" />
+<link rel="canonical" href="..." />
+<meta name="keywords"      content="comma separated keyword list" />
+<meta name="news_keywords" content="comma separated keyword list" />
 <meta name="revisit-after" content="1 day" />
 '''
 
 from . import OpenGraphParser
-# from opengraph import OpenGraphParser # OGParser?
-
 
 class Parser (OpenGraphParser):
     def parse (self):
         meta = super(Parser,self).parse()
-        meta['date'] = self.date()
+        meta['date'] = self.parse_date()
         return meta

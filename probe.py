@@ -12,7 +12,7 @@ try:
 except IOError:
     fp = urllib2.urlopen (sys.argv[1])
 
-tree = etree.HTML (fp.read())   # can pass just fp?
+tree = etree.HTML (fp.read())
 xpath = tree.xpath
 
 def itemprop (key):
