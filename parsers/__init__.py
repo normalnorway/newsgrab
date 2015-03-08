@@ -37,7 +37,7 @@ class ParserBase (object):
             self.tree = None    # release memory
         return self.meta
 
-    def get_json (self):
+    def get_json (self):    # get_as_json
         import json
         meta = self.get()
         meta['date'] = str (meta['date']) # json don't handle python datetime
@@ -84,6 +84,8 @@ class OpenGraphParser (ParserBase):
 
     def parse (self):
         """Parse OpenGraph properties and return as dict"""
+        if self.tree is None:
+            raise Exception ('No data to parse. Must call set_url(), set_html() or pass url to constructor.')
         L = self.tree.xpath ('/html/head/meta[starts-with(@property,"og:")]')
         if not L: return {}
         self.supported = True

@@ -31,6 +31,7 @@ except IndexError:
 
 
 # Load parser
+# @todo driver.load_parser_class
 try:
     mod = __import__ ('parsers.'+parser_id, fromlist=['Parser'])
     parser = mod.Parser()

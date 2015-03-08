@@ -15,13 +15,23 @@ sys.path.append (os.path.dirname (__file__))
 
 
 def domain_to_pyid (domain):
-    '''Convert a domain name into a valid python identifier'''
+    """Convert a domain name into a valid python identifier"""
     if domain.startswith('www.'):
         domain = domain[4:]
     return domain.replace('.', '_')
 
 def domain_to_parser_id (domain):
     return domain_to_pyid (domain)
+
+
+def load_parser (pyid): # get_parser_class?
+    """Import a parser module and returns the parser class"""
+    try:
+        mod = __import__ ('parsers.'+pyid, fromlist=['Parser'])
+        return mod.Parser
+    except ImportError as ex:
+        return None
+
 
 
 class ParserFactory (object):
