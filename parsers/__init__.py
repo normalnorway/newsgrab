@@ -5,6 +5,19 @@ from datetime import datetime
 logger = logging.getLogger (__name__)
 
 
+def _dict_to_unicode (data, charset):
+    """Converts all string objects in a dictionary to unicode"""
+    out = {}
+    for key,val in data.iteritems():
+        ukey = unicode (key, charset)
+        if type(val) == str:
+            uval = unicode (val, charset)
+        else:
+            uval = val
+        out[ukey] = uval
+    return out
+
+
 # Note: self.tree is released after calling get()
 # So additional parsing must be done in the subclass's parse().
 class ParserBase (object):
@@ -16,6 +29,7 @@ class ParserBase (object):
         """If url is None then set_html() must be called"""
         if url: self.set_url (url)
 
+    # @todo rename set -> load
     def set_url (self, url):
         import urllib2
         self.set_html (urllib2.urlopen(url).read())
@@ -25,16 +39,32 @@ class ParserBase (object):
         self.tree = etree.HTML (data)
         self.meta = None
         self.url = None
-        #self.url = '(none)'
+
+    #def set_html_file (self, filename):
+
+    # Bug: will do case sensitive match for charset and http-equiv
+    def _detect_charset (self):
+        charset = self.tree.xpath ("/html/head/meta[@charset]/@charset")
+        if charset: return charset[0]
+        #for elem in self.tree.xpath ("/html/head/meta"):
+        L = self.tree.xpath ("/html/head/meta[translate(@http-equiv,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='content-type']")
+        if L: return L[0].get('content').split('=')[-1]
+        logger.warn ('Missing charset for "%s", defaulting to latin1', self.url)
+        return 'iso-8859-1' # default for html
+        # @todo try to detect it? then must store htmldata
+        #chardet.detect()
 
     def parse (self):
-        raise NotImplementedError()
+        if self.tree is None:
+            raise Exception ('No data to parse. Must call set_url(), set_html() or pass url to constructor.')
+        self.charset = self._detect_charset()
 
     def get (self):
         """Get metadata as a dict"""
         if not self.meta:
-            self.meta = self.parse()
+            meta = self.parse()
             self.tree = None    # release memory
+            self.meta = _dict_to_unicode (meta, self.charset)
         return self.meta
 
     def get_json (self):    # get_as_json
@@ -68,7 +98,6 @@ class OpenGraphParser (ParserBase):
     """
 
     supported = False
-    #namespace = None    # note: not all sites uses this
 
     def itemprop (self, key, elem=None):
         if elem:
@@ -77,15 +106,15 @@ class OpenGraphParser (ParserBase):
             expr = "//*[@itemprop='%s']/text()" % key
         #return self.tree.xpath(expr)[0].strip()
         data = self.tree.xpath (expr)
-        if len(data) > 1:
-            logger.warn ('More than one match. Ignoring the rest!')
+        if len(data) > 1: logger.warn ('More than one match. Ignoring the rest!')
         return data[0].strip()
 
+    #def getmetaprop (tree, key):
+    #    return tree.xpath("/html/head/meta[@property='%s']/@content" % key)[0]
 
     def parse (self):
         """Parse OpenGraph properties and return as dict"""
-        if self.tree is None:
-            raise Exception ('No data to parse. Must call set_url(), set_html() or pass url to constructor.')
+        super(OpenGraphParser,self).parse()
         L = self.tree.xpath ('/html/head/meta[starts-with(@property,"og:")]')
         if not L: return {}
         self.supported = True
@@ -99,11 +128,6 @@ class OpenGraphParser (ParserBase):
         if meta.has_key ('type') and meta['type'] != 'article':
             logger.info ('og:type = %s for: %s', meta['type'], self.url)
 
-        # @todo these transformations don't belong here
-        # @todo nuke all unknown keys?
-        meta.pop ('type', None)
-        meta.pop ('site_name', None)
-        meta['summary'] = meta.pop ('description', '')
         return meta
 
 
@@ -118,13 +142,3 @@ class OpenGraphParser (ParserBase):
 
     def is_supported (self):
         return self.is_supported
-
-    """
-    def _parse_namespace (self):
-        self.namespace = self.tree.xpath('/html')[0].get('xmlns:og')
-        if not self.namespace:
-            logger.info('fixme')
-            return
-        if self.namespace != 'http://ogp.me/ns#':
-            logger.warn('fixme')
-    """
