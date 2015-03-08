@@ -4,6 +4,10 @@ Uses OpenGraph + <time> element.
 
 xmlns:fb="http://www.facebook.com/2008/fbml"
 xmlns:og="http://ogp.me/ns#">
+
+TODO:
+image = http://www.aftenposten.no/incoming/article7605814.ece/ALTERNATES/w2048c169/afp000694277.jpg?updated=160620141138
+  remove query part?
 '''
 
 from datetime import datetime, timedelta

@@ -33,6 +33,16 @@ has_meta = set()
 # @todo og:type == article
 
 
+
+## 0. Namespace
+#self.namespace = self.tree.xpath('/html')[0].get('xmlns:og')
+#if not self.namespace:
+#    logger.info('fixme')
+#    return
+#if self.namespace != 'http://ogp.me/ns#':
+#    logger.warn('fixme')
+
+
 ## 1. Check for header meta tags
 L = xpath ('/html/head/meta[starts-with(@property,"og:")]')
 if not L: L = []

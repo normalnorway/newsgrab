@@ -9,6 +9,9 @@ import sys, os
 from urlparse import urlsplit
 from driver import domain_to_parser_id
 
+import logging
+logging.basicConfig (level=logging.DEBUG)
+
 # Some sites requires a Norwegian locale for the date parsing
 # functions to work. Dagsavisen,
 import locale
@@ -45,10 +48,14 @@ except ImportError as ex:
 #elif url:
 #    parser.set_url (url)
 
+print "###", parser_id
 parser.set_html (fp.read())
+parser.url = parser_id
 data = parser.get()
+
 #from pprint import pprint
 #pprint (data)
+#exit(0)
 
 for key,val in data.iteritems():
     print '# %s\n[%s]\n' % (key.ljust(8), val)

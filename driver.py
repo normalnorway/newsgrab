@@ -37,6 +37,8 @@ def load_parser (pyid): # get_parser_class?
 class ParserFactory (object):
     parsers = {}    # Parser object cache
 
+    # @todo get_by_pyid() or use _get()
+
     #def get (self, url, load_url=True, urlobj=None):
     def get (self, url, load_url=True):
         urlobj = urlsplit (url)
