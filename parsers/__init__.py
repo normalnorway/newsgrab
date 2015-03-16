@@ -38,9 +38,12 @@ def _parse_norwegian_datetime (datestr):
         raise ValueError ('Can not parse date: %s [%s]' % (' '.join(tp), str(ex)))
 
     timestr = match.groups()[-1].strip()
-    tp = timestr.split(':')
-    hour = int(tp[0])
-    minute = int(tp[1])
+    if timestr:
+        tp = timestr.split(':')
+        hour = int(tp[0])
+        minute = int(tp[1])
+    else:
+        hour, minute = 0,0  # missing, so use 00:00
 
     return datetime (year, month, day, hour, minute)
 
