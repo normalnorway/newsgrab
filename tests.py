@@ -39,6 +39,9 @@ class MyTestCase (unittest.TestCase):
     def test_forskning_no (self):
         self.assertEqual (*self._load ('forskning_no'))
 
+    def test_vg_no (self):
+        self.assertEqual (*self._load ('vg_no'))
+
 
 
 if __name__ == '__main__':
