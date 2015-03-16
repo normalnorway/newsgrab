@@ -42,10 +42,7 @@ def _parse_norwegian_datetime (datestr):
     hour = int(tp[0])
     minute = int(tp[1])
 
-    return datetime.datetime (year, month, day, hour, minute)
-
-
-
+    return datetime (year, month, day, hour, minute)
 
 
 
