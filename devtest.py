@@ -14,8 +14,8 @@ logging.basicConfig (level=logging.DEBUG)
 
 # Some sites requires a Norwegian locale for the date parsing
 # functions to work. Dagsavisen,
-import locale
-locale.setlocale (locale.LC_TIME, 'nb_NO.utf8')
+#import locale
+#locale.setlocale (locale.LC_TIME, 'nb_NO.utf8')
 
 
 # Load file or url

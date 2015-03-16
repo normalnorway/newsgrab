@@ -6,8 +6,8 @@ from driver import domain_to_pyid as domain_to_pyton_id
 from driver import load_parser
 from __init__ import get_metadata_as_json
 
-import locale
-locale.setlocale (locale.LC_TIME, 'nb_NO.utf8')
+#import locale
+#locale.setlocale (locale.LC_TIME, 'nb_NO.utf8')
 
 # @todo mkdir testdata
 
