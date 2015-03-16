@@ -25,5 +25,7 @@ class Parser (OpenGraphParser):
 
     def parse (self):
         meta = super(Parser,self).parse()
-        meta['date'] = self.parse_date()
+#        meta['date'] = self.parse_date()
+        if meta['title'].endswith ('- dagsavisen.no'):
+            meta['title'] = meta['title'][:-16] # remove branding
         return meta
