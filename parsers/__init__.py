@@ -109,6 +109,7 @@ class OpenGraphParser (ParserBase):
         if len(data) > 1: logger.warn ('More than one match. Ignoring the rest!')
         return data[0].strip()
 
+
     #def getmetaprop (tree, key):
     #    return tree.xpath("/html/head/meta[@property='%s']/@content" % key)[0]
 
@@ -128,10 +129,25 @@ class OpenGraphParser (ParserBase):
         if meta.has_key ('type') and meta['type'] != 'article':
             logger.info ('og:type = %s for: %s', meta['type'], self.url)
 
+        # Try to parse 'datePublished'
+        L = self.tree.xpath ("//*[@itemprop='datePublished']/text()")
+        if len(L) == 1:
+            datestr = L[0].strip()
+            for fmt in ('%m.%d.%Y %H:%M', '%Y-%m-%d %H:%M:%S', '%Y-%m-%dT%H:%M:%S'):
+                try:
+                    meta['date'] = datetime.strptime (datestr, fmt)
+                    break
+                except ValueError:
+                    pass
+            if not meta.has_key('date'):
+                logger.info ('Have datePublished, but unable to parse date: %s', datestr)
+
         return meta
 
 
+    # Deprecated: Better to add the date format to parse()
     def parse_date (self, fmt='%Y-%m-%dT%H:%M:%S'):
+        logger.warn ('parse_date() is deprecated!')
         datestr = self.itemprop ('datePublished')
         assert datestr
         return datetime.strptime (datestr, fmt)
