@@ -1,3 +1,4 @@
+import re
 import logging
 from lxml import etree
 from datetime import datetime
@@ -16,6 +17,36 @@ def _dict_to_unicode (data, charset):
             uval = val
         out[ukey] = uval
     return out
+
+
+# Helper to parse norwegian dates
+# @todo handle abbreviated month names
+# @todo handle seconds in time part (and better error handling)
+_RE_DATETIME_PARSE = re.compile (r'(\d{1,2})\. ([a-zA-Z]+) (\d{4})(.*)')
+_MONTH_NAMES = (None, 'januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember')
+_ABMONTH_NAMES = (None, 'jan.', 'feb.', 'mars', 'apr.', 'mai', 'juni', 'juli', 'aug.', 'sep.', 'okt.', 'sep.', 'nov.', 'des.')
+
+def _parse_norwegian_datetime (datestr):
+    """Parse datetime using Norwegian month names"""
+    match = _RE_DATETIME_PARSE.match (datestr)
+    tp = match.groups()[0:-1]   # split of last part (time)
+    try:
+        day = int(tp[0])
+        month = _MONTH_NAMES.index(tp[1].lower())
+        year = int(tp[2])
+    except ValueError as ex:
+        raise ValueError ('Can not parse date: %s [%s]' % (' '.join(tp), str(ex)))
+
+    timestr = match.groups()[-1].strip()
+    tp = timestr.split(':')
+    hour = int(tp[0])
+    minute = int(tp[1])
+
+    return datetime.datetime (year, month, day, hour, minute)
+
+
+
+
 
 
 # Note: self.tree is released after calling get()
@@ -58,6 +89,10 @@ class ParserBase (object):
         if self.tree is None:
             raise Exception ('No data to parse. Must call set_url(), set_html() or pass url to constructor.')
         self.charset = self._detect_charset()
+
+    def parse_date_no (self, datestr):
+        """Parse datetime string using Norwegian month names"""
+        return _parse_norwegian_datetime (datestr)
 
     def get (self):
         """Get metadata as a dict"""
@@ -130,6 +165,7 @@ class OpenGraphParser (ParserBase):
             logger.info ('og:type = %s for: %s', meta['type'], self.url)
 
         # Try to parse 'datePublished'
+        # @todo move to parse.date()?
         L = self.tree.xpath ("//*[@itemprop='datePublished']/text()")
         if len(L) == 1:
             datestr = L[0].strip()
@@ -141,6 +177,8 @@ class OpenGraphParser (ParserBase):
                     pass
             if not meta.has_key('date'):
                 logger.info ('Have datePublished, but unable to parse date: %s', datestr)
+        elif len(L) > 1:
+            logger.info ('Found multiple datePublished; do not know howto handle')
 
         return meta
 
