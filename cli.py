@@ -18,7 +18,7 @@ meta = get_metadata (url)
 #exit(0)
 
 print
-print 'DATE\t',     meta['date']
+print 'DATE\t',     meta['date'] if meta.has_key('date') else '(missing)'
 print 'TITLE\t',    meta['title']
 print 'URL\t',      meta['url']
 print 'IMAGE\t',    meta['image']

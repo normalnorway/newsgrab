@@ -1,7 +1,7 @@
 """
 Simple unit testing.
 
-Run build-tests.py to populate testdata/.
+Run fetch-testdata.py to populate testdata/.
 But if testing with the same version as used to build the testdata,
 the tests are worthless! So better to add json files to git?
 """
@@ -10,8 +10,18 @@ import unittest
 import json
 from driver import load_parser as get_parser_class
 
+import os
+BASE = os.path.dirname (__file__)
+datadir = os.path.join (BASE, 'testdata')
+#if not os.path.isdir (datadir): os.mkdir (datadir)
+if not os.path.isdir (datadir):
+    print 'ERROR: testdata/ is missing! Run python fetch-testdata.py'
+    exit (1)
+del datadir
+
 
 def _load_file (filename):
+    filename = os.path.join (BASE, filename)
     with open(filename) as fp:
         return fp.read()
 
