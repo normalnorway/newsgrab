@@ -8,11 +8,6 @@ from urlparse import urlsplit
 
 logger = logging.getLogger (__name__)
 
-# Did not find a way to __import__ modules relative to current
-# directory, so must add current dir to python's path instead.
-import sys
-sys.path.append (os.path.dirname (__file__))
-
 
 def domain_to_pyid (domain):
     """Convert a domain name into a valid python identifier"""
@@ -27,7 +22,7 @@ def domain_to_parser_id (domain):
 def load_parser (pyid): # get_parser_class?
     """Import a parser module and returns the parser class"""
     try:
-        mod = __import__ ('parsers.'+pyid, fromlist=['Parser'])
+        mod = __import__ ('newsgrab.parsers.'+pyid, fromlist=['Parser'])
         return mod.Parser
     except ImportError as ex:
         return None
@@ -51,7 +46,7 @@ class ParserFactory (object):
 
         # Try to load parser from parsers/<pyid>.py
         try:
-            module = __import__ ('parsers.'+pyid, fromlist=['Parser'])
+            module = __import__ ('newsgrab.parsers.'+pyid, fromlist=['Parser'])
             self.parsers[pyid] = module.Parser (url if load_url else None)
             return self.parsers[pyid]
         except ImportError:

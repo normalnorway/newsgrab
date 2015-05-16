@@ -2,7 +2,7 @@
 import sys
 import textwrap
 import logging
-from __init__ import get_metadata
+from newsgrab import get_metadata
 
 logging.basicConfig (level=logging.INFO)
 
