@@ -169,7 +169,7 @@ class OpenGraphParser (ParserBase):
         L = self.tree.xpath ("//*[@itemprop='datePublished']/text()")
         if len(L) == 1:
             datestr = L[0].strip()
-            for fmt in ('%m.%d.%Y %H:%M', '%Y-%m-%d %H:%M:%S', '%Y-%m-%dT%H:%M:%S'):
+            for fmt in ('%d.%m.%Y %H:%M', '%Y-%m-%d %H:%M:%S', '%Y-%m-%dT%H:%M:%S'):
                 try:
                     meta['date'] = datetime.strptime (datestr, fmt)
                     break
