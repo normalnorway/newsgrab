@@ -2,7 +2,8 @@
 *~
 .*.swp
 
-# setuptools
-#MANIFEST
-#build/
-#dist/
+# Setuptools
+#/dist/
+#/*.egg-info
+/MANIFEST
+/build/
