@@ -2,6 +2,7 @@ import re
 import logging
 from lxml import etree
 from datetime import datetime
+from datetime import timedelta
 
 logger = logging.getLogger (__name__)
 
@@ -93,6 +94,33 @@ class ParserBase (object):
     def parse_date_no (self, datestr):
         """Parse datetime string using Norwegian month names"""
         return _parse_norwegian_datetime (datestr)
+
+    def parse_iso_date (self, datestr):
+        """Parse a ISO 8601 combined date and time"""
+        if datestr[-1] == 'Z':
+            datestr = datestr[:-1] + '+00:00'
+
+        # Note: Time zones in ISO 8601 are represented as local time when
+        # no time zone is given. While it may be safe to assume local time
+        # when communicating in the same time zone, it is ambiguous when
+        # used in communicating across different time zones.
+        # https://en.wikipedia.org/wiki/ISO_8601#Time_zone_designators
+
+        match = re.match (r'(.*)([+-])(\d\d):?(\d\d)?$', datestr)
+        #print match.groups()
+        # ('2014-03-07T06:00:24', '+', '01', None)
+        if match:
+            # \1    2014-03-07T06:00:24
+            # \2    +
+            # \3    01
+            # \4    00
+            #tz_idx = match.regs[1][0]   # start pos of first match
+            #dt = datetime.strptime (datestr[:idx], '%Y-%m-%dT%H:%M:%S')
+            dt = datetime.strptime (match.expand(r'\1'), '%Y-%m-%dT%H:%M:%S')
+            dt = dt.replace (second=0)
+            tz_hour = int (match.expand(r'\2\3'))
+            tz_min  = int (match.expand(r'\4')) if match.lastindex==4 else 0
+            return dt + timedelta (hours=tz_hour, minutes=tz_min)
 
     def get (self):
         """Get metadata as a dict"""
