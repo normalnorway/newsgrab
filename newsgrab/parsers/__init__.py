@@ -95,7 +95,8 @@ class ParserBase (object):
         """Parse datetime string using Norwegian month names"""
         return _parse_norwegian_datetime (datestr)
 
-    def parse_iso_date (self, datestr):
+    # @todo throw DateParsingError?
+    def parse_iso_date (self, datestr): # @todo return_in_utc=False
         """Parse a ISO 8601 combined date and time"""
         if datestr[-1] == 'Z':
             datestr = datestr[:-1] + '+00:00'
@@ -121,6 +122,7 @@ class ParserBase (object):
             tz_hour = int (match.expand(r'\2\3'))
             tz_min  = int (match.expand(r'\4')) if match.lastindex==4 else 0
             return dt + timedelta (hours=tz_hour, minutes=tz_min)
+        assert False    # XXX
 
     def get (self):
         """Get metadata as a dict"""
@@ -205,6 +207,8 @@ class OpenGraphParser (ParserBase):
                     pass
             if not meta.has_key('date'):
                 logger.info ('Have datePublished, but unable to parse date: %s', datestr)
+                # XXX but using text(), also try datetime attrib
+                #     http://www.ba.no/apen-om-eget-rusmisbruk/s/5-8-146941
         elif len(L) > 1:
             logger.info ('Found multiple datePublished; do not know howto handle')
 

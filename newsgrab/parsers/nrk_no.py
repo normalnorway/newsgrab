@@ -9,6 +9,10 @@ INFO:newsgrab.parsers:Found multiple datePublished; do not know howto handle
          itemtype  = "http://schema.org/Article">
 """
 
+# XXX fix date. should not add/sub timezone (then must store all in utc)
+#     better to ensure in correct timezone
+# http://www.nrk.no/ytring/to-historier-om-ruspolitikk-1.11585406
+
 from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
