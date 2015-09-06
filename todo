@@ -1,0 +1,15 @@
+Handle dead links (timeout)
+
+Sanetize data? Like removing query string from url and image_url
+  https://imbo.vgtv.no/users/vgtv/images/3cbb2c995fe37d863e8d89f9ff8791c4.jpg?t[]=768x432q80
+
+articleBody
+
+The README.txt file should be written in reST so that the PyPI can use
+it to generate your project’s PyPI page.
+
+# In child parser
+class Parser (OpenGraphParser):
+    def parse (self):
+        meta = super(Parser,self).parse() # add flag to don't do generic
+					  # datePublished parsing
