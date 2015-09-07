@@ -26,9 +26,11 @@ an OpenGraph parser and manual scraping using xpath (python-lxml).
 
 ## Usage
 
-    from newsgrab import get_metadata, get_metadata_as_json
-    print get_metadata (url)            # dict
-    print get_metadata_as_json (url)    # str
+```python
+from newsgrab import get_metadata, get_metadata_as_json
+print get_metadata (url)            # dict
+print get_metadata_as_json (url)    # str
+```
 
 
 ## Howto add a new parser
@@ -42,11 +44,12 @@ work is required.
 
 1. Create `newsgrab/parsers/<example_no>.py`
 
-If you are lucky, this is enough:
-
-    from . import OpenGraphParser
-    class Parser (OpenGraphParser):
-        pass
+```python
+# If you are lucky, this is enough:
+from . import OpenGraphParser
+class Parser (OpenGraphParser):
+    pass
+```
 
 (And in this simple case a custom parser is not needed, since the
 default is to try `OpenGraphParser`.)
@@ -62,6 +65,13 @@ default is to try `OpenGraphParser`.)
    `git add fixture/<example_no>.json`
    `git commit -m 'new parser: <example_no>`
    `git push`
+
+```bash
+git add newsgrab/parser/<example_no>.py
+git add fixture/<example_no>.json
+git commit -m 'new parser: <example_no>
+git push
+```
 
 Step 2-4 is only needed to detect when the parser breaks in the future;
 and it will some day, so don't be lazy and skip it!
