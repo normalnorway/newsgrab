@@ -1,8 +1,8 @@
 Norwegian news grabber
 ======================
 
-[![Code Health](https://landscape.io/github/normalnorway/normal.no/master/landscape.svg?style=flat)](https://landscape.io/github/normalnorway/normal.no/master)
-[![Build Status](https://travis-ci.org/normalnorway/normal.no.svg?branch=master)](https://travis-ci.org/normalnorway/normal.no)
+[![Code Health](https://landscape.io/github/normalnorway/newsgrab/master/landscape.svg?style=flat)](https://landscape.io/github/normalnorway/newsgrab/master)
+[![Build Status](https://travis-ci.org/normalnorway/newsgrab.svg?branch=master)](https://travis-ci.org/normalnorway/newsgrab)
 
 *Note: This is work in progress, but usable.*
 
@@ -65,13 +65,6 @@ default is to try `OpenGraphParser`.)
    `git add fixture/<example_no>.json`
    `git commit -m 'new parser: <example_no>`
    `git push`
-
-```bash
-git add newsgrab/parser/<example_no>.py
-git add fixture/<example_no>.json
-git commit -m 'new parser: <example_no>
-git push
-```
 
 Step 2-4 is only needed to detect when the parser breaks in the future;
 and it will some day, so don't be lazy and skip it!
