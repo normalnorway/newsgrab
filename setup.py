@@ -13,8 +13,8 @@ setup (
     author_email = 'post@normal.no',
     url = 'https://github.com/normalnorway/newsgrab',
 
-    install_requires = ['lxml'],
+    # UserWarning: Unknown distribution option: 'install_requires'
+    #install_requires = ['lxml'],
 
     packages     = ['newsgrab', 'newsgrab.parsers'],
-    scripts      = ['bin/newsgrab-cli'],
 )

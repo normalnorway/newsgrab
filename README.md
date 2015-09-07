@@ -12,7 +12,7 @@ an OpenGraph parser and manual scraping using xpath (python-lxml).
 
 ## Example
 
-    $ /cli.py http://www.aftenposten.no/nyheter/uriks/The-New-York-Times-krever-cannabislegalisering-i-hele-USA-7649727.html
+    $ ./cli.py http://www.aftenposten.no/nyheter/uriks/The-New-York-Times-krever-cannabislegalisering-i-hele-USA-7649727.html
 
     DATE    2014-07-27 10:59:00
     TITLE   The New York Times krever cannabislegalisering i hele USA
@@ -22,6 +22,10 @@ an OpenGraph parser and manual scraping using xpath (python-lxml).
     SUMMARY:
     Den amerikanske storavisen tar i bruk storsleggen på lederplass. De
     mener konsekvensene av forbudet er «rasistisk».
+
+Or do this after installing the package:
+
+    $ python -m newsgrab <url>
 
 
 ## Usage
