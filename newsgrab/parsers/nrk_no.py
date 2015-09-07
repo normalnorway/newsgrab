@@ -24,7 +24,7 @@ class Parser (OpenGraphParser):
         article = L.pop()
         assert L == []
 
-        L = article.xpath("//time[@itemprop='datePublished']/@datetime")
+        L = article.xpath(".//time[@itemprop='datePublished']/@datetime")
         assert len(L) == 2  # found both on start and end of article
         datestr = L[0]
 

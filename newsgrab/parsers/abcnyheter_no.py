@@ -1,33 +1,38 @@
 ''' abcnyheter.no
 
-Supports OpenGraph (but xmlns:og is missing).
+Supported OpenGraph properties:
+title, url, description, og:image, type, locality
 
-Supports schema.org:
-- http://schema.org/NewsArticle
-- http://schema.org/Thing
-- http://schema.org/ImageObject
-- http://schema.org/Person  (Author)
+<meta content="2014-02-28T13:58:08" property="article:published_time">
 
-Meta:   title, description, image, type, url, site_name
+# Other usefull elements
+<link href="..." rel="canonical">
 
-Some interesting itemprops:
-  1  datePublished
-  1  articleBody
-  1  author
-  1  articleSection
-  1  headline
-  6  image      ?? is the first image the correct one?
-  1  keywords
-  1  text       ?? what is this for?
+<meta content="Nyheter" property="article:section">
 
-# Other usefull elements:
-<link rel="canonical" href="..." />
-<meta name="keywords"      content="comma separated keyword list" />
-<meta name="news_keywords" content="comma separated keyword list" />
-<meta name="revisit-after" content="1 day" />
+<meta content="keyword1,keyword2,..." name="keywords">
+<meta content="keyword1,keyword2,..." name="news_keywords">
+
+<meta content="bergen" property="article:tag">
+<meta content="nyheter" property="article:tag">
+one element per keyword
 '''
 
 from . import OpenGraphParser
 
+
+def get_meta_prop (node, prop_name):
+    L = node.xpath (".//meta[@property='%s']/@content" % prop_name)
+    if len(L) == 0: return None
+    if len(L) == 1: return L[0]
+    raise Exception ('found multiple <meta name="%s" ... /> elements' % prop_name)
+
+
 class Parser (OpenGraphParser):
-    pass
+
+    def parse (self):
+        meta = super(Parser,self).parse()
+        datestr = get_meta_prop (self.tree[0], 'article:published_time')
+        datestr += 'Z'  # hack since parse_iso_date don't handle
+        meta['date'] = self.parse_iso_date (datestr)
+        return meta
