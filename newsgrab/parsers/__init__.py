@@ -223,8 +223,9 @@ class OpenGraphParser (ParserBase):
         return datetime.strptime (datestr, fmt)
         # Note: %T is not supported in Python :(
 
-#    def _parse_date (self, datestr, fmt):
-#        return datetime.strptime (datestr, fmt)
+    def strptime (self, datestr, fmt):
+        """Helper so parsers don't have to include datetime"""
+        return datetime.strptime (datestr, fmt)
 
     def is_supported (self):
         return self.is_supported
