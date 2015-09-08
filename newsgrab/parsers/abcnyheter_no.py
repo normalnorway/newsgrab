@@ -29,9 +29,19 @@ def get_meta_prop (node, prop_name):
 
 
 class Parser (OpenGraphParser):
+    title_postfix = ' | ABC Nyheter'
+
+    # @todo better api. don't pass title, modify self.meta instead.
+    #       and make default behaviour if title_postfix is set
+    def clean_title (self, title):
+        if title.endswith (self.title_postfix):
+            return title[0:-len(self.title_postfix)]
+        return title
 
     def parse (self):
         meta = super(Parser,self).parse()
+        meta['title'] = self.clean_title (meta['title'])
+
         datestr = get_meta_prop (self.tree[0], 'article:published_time')
         datestr += 'Z'  # hack since parse_iso_date don't handle
         meta['date'] = self.parse_iso_date (datestr)
