@@ -1,38 +1,44 @@
-# encoding: utf-8
-'''
-forskning.no
+r""" Forskning.no
 
-<html  lang="nb" dir="ltr" prefix="og: http://ogp.me/ns#">
+Using Open Graph and manual date parsing.
 
-Missing: og:description
+Notes:
+* Date element is not very well (semantically) marked
+* Date string is not using standard format
+* Date string in local timezone
 
-<link rel="canonical" href="..." />
+Date markup:
+<div class="field field-name-published-date field-type-ds field-label-hidden">
+  <div class="field-items">
+    <div class="field-item even">28.8 2012 05:00</div>
+  </div>
+</div>
 
-Note: Not equal to "ingress"
-<meta name="twitter:description" content="..." />
+Other intereseting elements:
+<link rel="canonical" href="..." />     <-- using og:url instead
+<link rel="shortlink" href="..." />
+"""
 
-div#content
-h1.title
-div.field-name-field-intro-text
-div.field-published-date
-'''
-
-from datetime import datetime
 from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
 
     def parse (self):
         meta = super(Parser,self).parse()
-        xpath = self.tree.xpath
+        xpath = self.tree[1].xpath  # body
 
-        # Date
-        tmp = xpath('//div[contains(@class, "field-name-published-date")]')[0]
-        tmp = tmp.xpath("div/div")[0].text.strip()
-        meta['date'] = datetime.strptime(tmp, '%d.%m %Y %H:%M')
+        L = xpath('//div[contains(@class, "field-name-published-date")]')
+        node = L[0]
+        assert 'moscone-container-inner' in node.getparent().attrib['class']
 
-        # Description
-        tmp = xpath('//div[contains(@class, "field-name-field-intro-text")]')[0]
-        meta['description'] = tmp.xpath("div/div/p")[0].text.strip()
+        # Note: Query above returns 4 elements
+        #for node in L: print node.getparent().attrib
+        # {'class': 'moscone-container-inner moscone-header-inner panel-panel-inner'}
+        # {'class': 'group-metainfo field-group-html-element'}
+        # {'class': 'group-metainfo field-group-html-element'}
+        # {'class': 'group-metainfo field-group-html-element'}
+
+        datestr = node.xpath("div/div")[0].text.strip()
+        meta['date'] = self.strptime (datestr, '%d.%m %Y %H:%M')
 
         return meta
