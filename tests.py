@@ -76,8 +76,9 @@ class MyTestCase (unittest.TestCase):
 # Add tests to MyTestCase
 for url in urls_to_test:
     name = 'test_' + id_from_url (url)
-    setattr (MyTestCase, name, lambda self:
+    setattr (MyTestCase, name, lambda self,url=url: # url=url: lambda capture
                 self.assertEqual (*self.load_data (url)))
+
 
 
 if __name__ == '__main__':
