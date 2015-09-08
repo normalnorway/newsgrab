@@ -4,6 +4,7 @@ Simple test system.
 Run parser on set of urls and compares to existing data.
 """
 
+# Note: Can one have one url per domain. @todo fix that
 urls_to_test = [
     'http://www.aftenposten.no/nyheter/uriks/The-New-York-Times-krever-cannabislegalisering-i-hele-USA-7649727.html',
     'http://www.abcnyheter.no/nyheter/2014/02/28/brukte-pressen-til-lokke-narko-siktet-politiker-i-felle',

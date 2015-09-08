@@ -1,3 +1,4 @@
+# Note: not in use anymore
 import os
 import argparse
 from urlparse import urlsplit

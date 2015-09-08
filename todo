@@ -13,3 +13,23 @@ class Parser (OpenGraphParser):
     def parse (self):
         meta = super(Parser,self).parse() # add flag to don't do generic
 					  # datePublished parsing
+
+.local/lib/python2.7/site-packages/NewsGrab-0.1.0.egg-info
+  Description: UNKNOWN
+  Platform: UNKNOWN
+
+parser.set_html()       allow passing a file pointer?
+
+parser.get()
+  return object instead? then can call obj.is_complete() and helpers to
+  list found and missing tags
+
+Way to get http status code
+
+raise RuntimeError instead of Exception
+
+Make probe.py tell if it got all data. Then don't need parser.
+
+self.xpath1     <-- raise if multiple values returned
+xpath1 (node, query)            <-- raise if no value returned
+xpath1 (node, query, default)   <-- returns default if empty query

@@ -43,8 +43,8 @@ Use the `probe.py` script to check which OpenGraph features are supported:
 
     $ ./probe.py <url>
 
-If you see `datePublished` then you are lucky, because almost no manual
-work is required.
+If you see one `datePublished` then you are lucky, because almost no
+manual work is required.
 
 1. Create `newsgrab/parsers/<example_no>.py`
 
@@ -56,7 +56,7 @@ class Parser (OpenGraphParser):
 ```
 
 (And in this simple case a custom parser is not needed, since the
-default is to try `OpenGraphParser`.)
+default is to try the OpenGraph parser.)
 
 2. Add a test url to `urls_to_test` in `tests.py`
 

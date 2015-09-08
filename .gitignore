@@ -7,3 +7,6 @@
 #/*.egg-info
 /MANIFEST
 /build/
+
+# When installing with: pip -e
+/NewsGrab.egg-info/
