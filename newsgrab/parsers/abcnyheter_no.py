@@ -21,13 +21,6 @@ one element per keyword
 from . import OpenGraphParser
 
 
-def get_meta_prop (node, prop_name):
-    L = node.xpath (".//meta[@property='%s']/@content" % prop_name)
-    if len(L) == 0: return None
-    if len(L) == 1: return L[0]
-    raise Exception ('found multiple <meta name="%s" ... /> elements' % prop_name)
-
-
 class Parser (OpenGraphParser):
     title_postfix = ' | ABC Nyheter'
 
@@ -42,7 +35,7 @@ class Parser (OpenGraphParser):
         meta = super(Parser,self).parse()
         meta['title'] = self.clean_title (meta['title'])
 
-        datestr = get_meta_prop (self.tree[0], 'article:published_time')
+        datestr = self.get_meta_property ('article:published_time')
         datestr += 'Z'  # hack since parse_iso_date don't handle
         meta['date'] = self.parse_iso_date (datestr)
         return meta

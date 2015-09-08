@@ -25,13 +25,13 @@ class Parser (OpenGraphParser):
 
     def parse (self):
         meta = super(Parser,self).parse()
-        xpath = self.tree[1].xpath  # body
+        xpath = self.body.xpath
 
         L = xpath('//div[contains(@class, "field-name-published-date")]')
         node = L[0]
         assert 'moscone-container-inner' in node.getparent().attrib['class']
 
-        # Note: Query above returns 4 elements
+        # Note: Query above returns 4 elements (only wants the first)
         #for node in L: print node.getparent().attrib
         # {'class': 'moscone-container-inner moscone-header-inner panel-panel-inner'}
         # {'class': 'group-metainfo field-group-html-element'}

@@ -1,5 +1,6 @@
 """ Bergensavisen - www.ba.no
 
+@todo use these instead
 <meta property="article:published_time" content="2015-09-03T15:29:30.000Z" />
 <meta property="article:modified_time" content="2015-09-03T18:14:03.000+0200" />
 Note: Time zone is not consistent :(
@@ -15,11 +16,6 @@ from . import OpenGraphParser
 
 # @todo only compile regex once
 # @todo improve datePublished in parse(); then can drop date handling here?
-
-def get_canonical_link (root):
-    L = root.xpath ("/html/head/link[@rel='canonical']/@href")
-    assert len(L)==1
-    return L[0]
 
 
 def get_itemprops (node, itemprop, element='*'):
@@ -81,19 +77,15 @@ class Parser (OpenGraphParser):
 
     def parse (self):
         meta = super(Parser,self).parse()
-
-        # @todo move to parent ctor
-        head = self.tree[0]
-        body = self.tree[1]
-        assert head.tag == 'head'
-        assert body.tag == 'body'
+        body = self.body
 
         L = body.xpath (".//main/article[@itemtype='http://schema.org/Article']")
         assert len(L) == 1
         article = L.pop()
 
         # og:url has (unwanted) query parameters appended, so don't use
-        meta['url'] = get_canonical_link (head)
+        # @todo can set OpenGraph.use_canonical instead?
+        meta['url'] = self.get_canonical_link ()
 
         # Published date
         # Can't to this; wrong timezone

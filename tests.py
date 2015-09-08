@@ -60,11 +60,15 @@ def create_testdata (skip_existing=True):
         set_file_contents (filename, parser.get_json())
 
 
+#create_testdata()
+#exit(0)
+
 
 import unittest
 import json
 
 class MyTestCase (unittest.TestCase):
+    maxDiff = None
     def load_data (self, url):
         """Parse url into json and load json from testdata (returns both)"""
         data1 = json.load (open(filename_from_url (url)))

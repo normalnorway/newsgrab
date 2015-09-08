@@ -53,8 +53,10 @@ def _parse_norwegian_datetime (datestr):
 # Note: self.tree is released after calling get()
 # So additional parsing must be done in the subclass's parse().
 class ParserBase (object):
-    tree = None     # lxml.etree or None
     url = None      # url passed to ctor (or None)
+    tree = None     # lxml.etree or None    (@todo rename root?)
+    head = None     # lxml.etree._Element of html head
+    body = None     # lxml.etree._Element of html body
     meta = None     # cached metadata
 
     def __init__ (self, url=None):
@@ -69,8 +71,14 @@ class ParserBase (object):
 
     def set_html (self, data):
         self.tree = etree.HTML (data)
-        self.meta = None
-        self.url = None
+#        self.head = self.tree[0]   # note: can be comment
+#        self.body = self.tree[1]
+#        print len(tree)     # 3
+#        print tree[0].tag   # <built-in function Comment>
+        self.head = self.tree.xpath ('/html/head[1]')[0]
+        self.body = self.tree.xpath ('/html/body[1]')[0]
+        assert self.head.tag == 'head'
+        assert self.body.tag == 'body'
 
     #def set_html_file (self, filename):
 
@@ -90,6 +98,20 @@ class ParserBase (object):
         if self.tree is None:
             raise Exception ('No data to parse. Must call set_url(), set_html() or pass url to constructor.')
         self.charset = self._detect_charset()
+
+    ## Helpers
+
+    def get_canonical_link (self):
+        L = self.tree.xpath ("/html/head/link[@rel='canonical']/@href")
+        assert len(L)==1
+        return L[0]
+
+    # q: is this opengraph specific?
+    def get_meta_property (self, prop_name):    # default = None ?
+        L = self.head.xpath (".//meta[@property='%s']/@content" % prop_name)
+        if len(L) == 0: return None
+        if len(L) == 1: return L[0]
+        raise RuntimeError ('found multiple <meta name="%s" ... /> elements' % prop_name)
 
     def parse_date_no (self, datestr):
         """Parse datetime string using Norwegian month names"""
@@ -123,6 +145,8 @@ class ParserBase (object):
             tz_min  = int (match.expand(r'\4')) if match.lastindex==4 else 0
             return dt + timedelta (hours=tz_hour, minutes=tz_min)
         assert False    # XXX
+
+    ## Accessors
 
     def get (self):
         """Get metadata as a dict"""

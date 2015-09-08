@@ -68,13 +68,11 @@ class Parser (OpenGraphParser):
         if meta['title'].endswith (' - Aftenposten'):
             meta['title'] = meta['title'][0:-14]
 
-        head = self.tree[0]
-        meta['description'] = head.xpath(".//meta[@name='og:description']/@content")[0]
+        meta['description'] = self.head.xpath(".//meta[@name='og:description']/@content")[0]
 
         # INFO:newsgrab.parsers:Found multiple datePublished; do not know howto handle
 
-        body = self.tree[1]
-        L = body.xpath(".//time[@itemprop='datePublished']/@datetime")
+        L = self.body.xpath(".//time[@itemprop='datePublished']/@datetime")
         assert len(L) == 2
         assert L[0] == L[1]
         datestr = L[0]
