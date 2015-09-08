@@ -31,6 +31,7 @@ has_meta = set()
 
 # @todo check for /html/body/meta?
 # @todo og:type == article
+#       then list <meta property="article:*" content="..." />
 
 
 

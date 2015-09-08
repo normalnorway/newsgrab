@@ -37,43 +37,10 @@ def get_date_modified (root, element='time'):
 
 # get_published_date?
 
-
-
-# XXX debug (parse_iso_date_2)
 import re
-from datetime import datetime, timedelta
-
+from datetime import timedelta
 
 class Parser (OpenGraphParser):
-
-    def parse_iso_date_2 (self, datestr, return_in_utc=False):
-        if datestr[-1] == 'Z':
-            datestr = datestr[:-1] + '+00:00'
-
-        # Regex capture groups
-        # g0    datetime-part
-        # g1    datetime-part, fraction of seconds (ignored)
-        # g2    timezone: + or -
-        # g3    timezone: hours
-        # g4    timezone: minutes (optional)
-
-        match = re.match (r'(.*)(?:\.\d{3})([+-])(\d\d):?(\d\d)?$', datestr)
-        if not match: return None
-
-#        print match.groups()
-        # \1    2014-03-07T06:00:24
-        # \2    +
-        # \3    01
-        # \4    00
-
-        dt = datetime.strptime (match.expand(r'\1'), '%Y-%m-%dT%H:%M:%S')
-        dt = dt.replace (second=0)  # nuke seconds
-        if return_in_utc:
-            tz_hour = int (match.expand(r'\2\3'))
-            tz_min  = int (match.expand(r'\4')) if match.lastindex==4 else 0
-            dt += timedelta (hours=tz_hour, minutes=tz_min)
-        return dt
-
 
     def parse (self):
         meta = super(Parser,self).parse()
@@ -104,7 +71,7 @@ class Parser (OpenGraphParser):
 
         date_str = get_date_published (body)
         assert date_str[-1] == 'Z'  # assert zulu time
-        dt = self.parse_iso_date_2 (date_str)
+        dt = self.parse_iso_date_new (date_str)
 
         match = re.match (r'(.*)([+-])(\d\d):?(\d\d)?$', get_date_modified (body))
         assert match

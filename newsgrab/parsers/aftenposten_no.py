@@ -29,35 +29,8 @@ Description  : Missing!
 
 from datetime import timedelta
 from . import OpenGraphParser
+from . import is_dst
 
-
-def last_sunday_of_month (year, month):
-    """Return day number of last sunday in the month.
-       Stolen from http://stackoverflow.com/a/29338804"""
-    import calendar
-    obj = calendar.monthcalendar (year, month)
-    return max (obj[-1][calendar.SUNDAY], obj[-2][calendar.SUNDAY])
-
-
-# XXX note dt is in zulu time. must fix cutoff
-def is_dst (dt):
-    """Return true if daylight saving time is in effect"""
-    assert (dt.year >= 1980)
-    if dt.month < 3:  return False  # mars
-    if dt.month > 10: return False  # oktober
-    if dt.month in [3,10]:
-        cutoff = dt.replace (day = last_sunday_of_month (dt.year, dt.month),
-                             hour=2, minute=0, second=0)
-        if dt.month ==  3: return dt >= cutoff
-        if dt.month == 10: return dt < cutoff # xxx correct time: 03:00
-    return True
-
-
-#from datetime import datetime
-#dt = datetime (2015, 10, 25, 01, 59)
-#print dt
-#print is_dst (dt)
-#exit (0)
 
 # get_meta_by_name helper? @see get_meta_prop
 

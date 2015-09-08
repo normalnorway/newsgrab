@@ -7,6 +7,34 @@ from datetime import timedelta
 logger = logging.getLogger (__name__)
 
 
+def last_sunday_of_month (year, month):
+    """Return day number of last sunday in the month.
+       Stolen from http://stackoverflow.com/a/29338804"""
+    import calendar
+    obj = calendar.monthcalendar (year, month)
+    return max (obj[-1][calendar.SUNDAY], obj[-2][calendar.SUNDAY])
+
+# XXX note dt is in zulu time. must fix cutoff
+def is_dst (dt):
+    """Return true if daylight saving time is in effect"""
+    assert (dt.year >= 1980)
+    if dt.month < 3:  return False  # mars
+    if dt.month > 10: return False  # oktober
+    if dt.month in [3,10]:
+        cutoff = dt.replace (day = last_sunday_of_month (dt.year, dt.month),
+                             hour=2, minute=0, second=0)
+        if dt.month ==  3: return dt >= cutoff
+        if dt.month == 10: return dt < cutoff # xxx correct time: 03:00
+    return True
+
+#from datetime import datetime
+#dt = datetime (2015, 10, 25, 01, 59)
+#print dt
+#print is_dst (dt)
+#exit (0)
+
+
+
 def _dict_to_unicode (data, charset):
     """Converts all string objects in a dictionary to unicode"""
     out = {}
@@ -106,13 +134,6 @@ class ParserBase (object):
         assert len(L)==1
         return L[0]
 
-    # q: is this opengraph specific?
-    def get_meta_property (self, prop_name):    # default = None ?
-        L = self.head.xpath (".//meta[@property='%s']/@content" % prop_name)
-        if len(L) == 0: return None
-        if len(L) == 1: return L[0]
-        raise RuntimeError ('found multiple <meta name="%s" ... /> elements' % prop_name)
-
     def parse_date_no (self, datestr):
         """Parse datetime string using Norwegian month names"""
         return _parse_norwegian_datetime (datestr)
@@ -145,6 +166,36 @@ class ParserBase (object):
             tz_min  = int (match.expand(r'\4')) if match.lastindex==4 else 0
             return dt + timedelta (hours=tz_hour, minutes=tz_min)
         assert False    # XXX
+
+    # q: need return_in_utc?
+    def parse_iso_date_new (self, datestr, return_in_utc=False):
+        if datestr[-1] == 'Z':
+            datestr = datestr[:-1] + '+00:00'
+
+        # Regex capture groups
+        # g0    datetime-part
+        # g1    datetime-part, fraction of seconds (ignored)
+        # g2    timezone: + or -
+        # g3    timezone: hours
+        # g4    timezone: minutes (optional)
+
+        match = re.match (r'(.*)(?:\.\d{3})([+-])(\d\d):?(\d\d)?$', datestr)
+        if not match: return None
+
+#        print match.groups()
+        # \1    2014-03-07T06:00:24
+        # \2    +
+        # \3    01
+        # \4    00
+
+        dt = datetime.strptime (match.expand(r'\1'), '%Y-%m-%dT%H:%M:%S')
+        dt = dt.replace (second=0)  # nuke seconds
+        if return_in_utc:
+            tz_hour = int (match.expand(r'\2\3'))
+            tz_min  = int (match.expand(r'\4')) if match.lastindex==4 else 0
+            dt += timedelta (hours=tz_hour, minutes=tz_min)
+        return dt
+
 
     ## Accessors
 
@@ -199,9 +250,6 @@ class OpenGraphParser (ParserBase):
         return data[0].strip()
 
 
-    #def getmetaprop (tree, key):
-    #    return tree.xpath("/html/head/meta[@property='%s']/@content" % key)[0]
-
     def parse (self):
         """Parse OpenGraph properties and return as dict"""
         super(OpenGraphParser,self).parse()
@@ -247,9 +295,18 @@ class OpenGraphParser (ParserBase):
         return datetime.strptime (datestr, fmt)
         # Note: %T is not supported in Python :(
 
+    def is_supported (self):
+        return self.is_supported
+
+    ## Helpers available for parsers
+
     def strptime (self, datestr, fmt):
         """Helper so parsers don't have to include datetime"""
         return datetime.strptime (datestr, fmt)
 
-    def is_supported (self):
-        return self.is_supported
+    def get_meta_property (self, prop_name): # @todo default=None or allow_empty
+        """"<meta property="prop_name" content="returns-this-value" />"""
+        L = self.head.xpath (".//meta[@property='%s']/@content" % prop_name)
+        if len(L) == 0: return None
+        if len(L) == 1: return L[0]
+        raise RuntimeError ('found multiple <meta name="%s" ... /> elements' % prop_name)
