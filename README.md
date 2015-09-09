@@ -2,7 +2,9 @@ Norwegian news grabber
 ======================
 
 [![Code Health](https://landscape.io/github/normalnorway/newsgrab/master/landscape.svg?style=flat)](https://landscape.io/github/normalnorway/newsgrab/master)
+<!-- Tests are failing on Travis-CI because character encoding issues
 [![Build Status](https://travis-ci.org/normalnorway/newsgrab.svg?branch=master)](https://travis-ci.org/normalnorway/newsgrab)
+-->
 
 *Note: This is work in progress, but usable.*
 
@@ -48,15 +50,15 @@ manual work is required.
 
 1. Create `newsgrab/parsers/<example_no>.py`
 
-```python
-# If you are lucky, this is enough:
-from . import OpenGraphParser
-class Parser (OpenGraphParser):
-    pass
-```
+    ```python
+    # If you are lucky, this is enough:
+    from . import OpenGraphParser
+    class Parser (OpenGraphParser):
+        pass
+    ```
 
-(And in this simple case a custom parser is not needed, since the
-default is to try the OpenGraph parser.)
+   (And in this simple case a custom parser is not needed, since the
+   default is to try the OpenGraph parser.)
 
 2. Add a test url to `urls_to_test` in `tests.py`
 
@@ -65,10 +67,12 @@ default is to try the OpenGraph parser.)
 4. `python tests.py -v`
 
 5. Commit your changes:
-   `git add newsgrab/parser/<example_no>.py`
-   `git add fixture/<example_no>.json`
-   `git commit -m 'new parser: <example_no>`
-   `git push`
+   ```
+   git add newsgrab/parser/<example_no>.py
+   git add fixture/<example_no>.json
+   git commit -m 'new parser: <example_no>
+   git push
+   ```
 
 Step 2-4 is only needed to detect when the parser breaks in the future;
 and it will some day, so don't be lazy and skip it!

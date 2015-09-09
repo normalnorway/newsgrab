@@ -99,14 +99,14 @@ class ParserBase (object):
 
     def set_html (self, data):
         self.tree = etree.HTML (data)
-#        self.head = self.tree[0]   # note: can be comment
-#        self.body = self.tree[1]
-#        print len(tree)     # 3
-#        print tree[0].tag   # <built-in function Comment>
         self.head = self.tree.xpath ('/html/head[1]')[0]
         self.body = self.tree.xpath ('/html/body[1]')[0]
-        assert self.head.tag == 'head'
-        assert self.body.tag == 'body'
+#        self.head = self.tree[0]   # note: can be comment
+#        self.body = self.tree[1]
+#        assert self.head.tag == 'head'
+#        assert self.body.tag == 'body'
+#        print len(tree)     # 3
+#        print tree[0].tag   # <built-in function Comment>
 
     #def set_html_file (self, filename):
 
@@ -203,7 +203,9 @@ class ParserBase (object):
         """Get metadata as a dict"""
         if not self.meta:
             meta = self.parse()
-            self.tree = None    # release memory
+            #del self.tree, self.head, self.body
+            #self.tree = None    # release memory
+            self.tree = self.head = self.body = None    # release memory
             self.meta = _dict_to_unicode (meta, self.charset)
         return self.meta
 
