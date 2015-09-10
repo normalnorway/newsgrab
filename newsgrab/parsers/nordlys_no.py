@@ -48,9 +48,6 @@ COUNT   ITEMPROP
 
 from . import OpenGraphParser
 
-from datetime import timedelta
-from . import is_dst
-
 class Parser (OpenGraphParser):
 
     def parse (self):
@@ -60,7 +57,6 @@ class Parser (OpenGraphParser):
 
         datestr = self.get_meta_property ('article:published_time')
         assert datestr[-1] == 'Z'
-        dt = self.parse_iso_date_new (datestr)
-        meta['date'] = dt + timedelta (hours = 2 if is_dst(dt) else 1)
+        meta['date'] = self.parse_iso_date (datestr)
 
         return meta

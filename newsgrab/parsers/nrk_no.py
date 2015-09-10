@@ -9,10 +9,6 @@ INFO:newsgrab.parsers:Found multiple datePublished; do not know howto handle
          itemtype  = "http://schema.org/Article">
 """
 
-# XXX fix date. should not add/sub timezone (then must store all in utc)
-#     better to ensure in correct timezone
-# http://www.nrk.no/ytring/to-historier-om-ruspolitikk-1.11585406
-
 from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
@@ -20,11 +16,11 @@ class Parser (OpenGraphParser):
     def parse (self):
         meta = super(Parser,self).parse()
 
-        L = self.tree.xpath("//article[@role='main']")
+        L = self.tree.xpath ("//article[@role='main']")
         article = L.pop()
         assert L == []
 
-        L = article.xpath(".//time[@itemprop='datePublished']/@datetime")
+        L = article.xpath (".//time[@itemprop='datePublished']/@datetime")
         assert len(L) == 2  # found both on start and end of article
         datestr = L[0]
 

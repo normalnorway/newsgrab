@@ -1,38 +1,10 @@
 import re
 import logging
 from lxml import etree
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
+from newsgrab.dateutils import parse_iso_date
 
 logger = logging.getLogger (__name__)
-
-
-def last_sunday_of_month (year, month):
-    """Return day number of last sunday in the month.
-       Stolen from http://stackoverflow.com/a/29338804"""
-    import calendar
-    obj = calendar.monthcalendar (year, month)
-    return max (obj[-1][calendar.SUNDAY], obj[-2][calendar.SUNDAY])
-
-# XXX note dt is in zulu time. must fix cutoff
-def is_dst (dt):
-    """Return true if daylight saving time is in effect"""
-    assert (dt.year >= 1980)
-    if dt.month < 3:  return False  # mars
-    if dt.month > 10: return False  # oktober
-    if dt.month in [3,10]:
-        cutoff = dt.replace (day = last_sunday_of_month (dt.year, dt.month),
-                             hour=2, minute=0, second=0)
-        if dt.month ==  3: return dt >= cutoff
-        if dt.month == 10: return dt < cutoff # xxx correct time: 03:00
-    return True
-
-#from datetime import datetime
-#dt = datetime (2015, 10, 25, 01, 59)
-#print dt
-#print is_dst (dt)
-#exit (0)
-
 
 
 def _dict_to_unicode (data, charset):
@@ -99,14 +71,8 @@ class ParserBase (object):
 
     def set_html (self, data):
         self.tree = etree.HTML (data)
-        self.head = self.tree.xpath ('/html/head[1]')[0]
-        self.body = self.tree.xpath ('/html/body[1]')[0]
-#        self.head = self.tree[0]   # note: can be comment
-#        self.body = self.tree[1]
-#        assert self.head.tag == 'head'
-#        assert self.body.tag == 'body'
-#        print len(tree)     # 3
-#        print tree[0].tag   # <built-in function Comment>
+        lst = [n for n in self.tree if n.tag in ('head', 'body')]
+        self.head, self.body = lst[0], lst[1]
 
     #def set_html_file (self, filename):
 
@@ -127,7 +93,7 @@ class ParserBase (object):
             raise Exception ('No data to parse. Must call set_url(), set_html() or pass url to constructor.')
         self.charset = self._detect_charset()
 
-    ## Helpers
+    ## HELPERS ##
 
     def get_canonical_link (self):
         L = self.tree.xpath ("/html/head/link[@rel='canonical']/@href")
@@ -138,66 +104,11 @@ class ParserBase (object):
         """Parse datetime string using Norwegian month names"""
         return _parse_norwegian_datetime (datestr)
 
-    # @todo throw DateParsingError?
-    def parse_iso_date (self, datestr): # @todo return_in_utc=False
-        """Parse a ISO 8601 combined date and time"""
-        if datestr[-1] == 'Z':
-            datestr = datestr[:-1] + '+00:00'
+    # @todo staticmethod?
+    def parse_iso_date (self, datestr):
+        return parse_iso_date (datestr)
 
-        # Note: Time zones in ISO 8601 are represented as local time when
-        # no time zone is given. While it may be safe to assume local time
-        # when communicating in the same time zone, it is ambiguous when
-        # used in communicating across different time zones.
-        # https://en.wikipedia.org/wiki/ISO_8601#Time_zone_designators
-
-        match = re.match (r'(.*)([+-])(\d\d):?(\d\d)?$', datestr)
-        #print match.groups()
-        # ('2014-03-07T06:00:24', '+', '01', None)
-        if match:
-            # \1    2014-03-07T06:00:24
-            # \2    +
-            # \3    01
-            # \4    00
-            #tz_idx = match.regs[1][0]   # start pos of first match
-            #dt = datetime.strptime (datestr[:idx], '%Y-%m-%dT%H:%M:%S')
-            dt = datetime.strptime (match.expand(r'\1'), '%Y-%m-%dT%H:%M:%S')
-            dt = dt.replace (second=0)
-            tz_hour = int (match.expand(r'\2\3'))
-            tz_min  = int (match.expand(r'\4')) if match.lastindex==4 else 0
-            return dt + timedelta (hours=tz_hour, minutes=tz_min)
-        assert False    # XXX
-
-    # q: need return_in_utc?
-    def parse_iso_date_new (self, datestr, return_in_utc=False):
-        if datestr[-1] == 'Z':
-            datestr = datestr[:-1] + '+00:00'
-
-        # Regex capture groups
-        # g0    datetime-part
-        # g1    datetime-part, fraction of seconds (ignored)
-        # g2    timezone: + or -
-        # g3    timezone: hours
-        # g4    timezone: minutes (optional)
-
-        match = re.match (r'(.*)(?:\.\d{3})([+-])(\d\d):?(\d\d)?$', datestr)
-        if not match: return None
-
-#        print match.groups()
-        # \1    2014-03-07T06:00:24
-        # \2    +
-        # \3    01
-        # \4    00
-
-        dt = datetime.strptime (match.expand(r'\1'), '%Y-%m-%dT%H:%M:%S')
-        dt = dt.replace (second=0)  # nuke seconds
-        if return_in_utc:
-            tz_hour = int (match.expand(r'\2\3'))
-            tz_min  = int (match.expand(r'\4')) if match.lastindex==4 else 0
-            dt += timedelta (hours=tz_hour, minutes=tz_min)
-        return dt
-
-
-    ## Accessors
+    ## ACCESSORS ##
 
     def get (self):
         """Get metadata as a dict"""
@@ -312,3 +223,16 @@ class OpenGraphParser (ParserBase):
         if len(L) == 0: return None
         if len(L) == 1: return L[0]
         raise RuntimeError ('found multiple <meta name="%s" ... /> elements' % prop_name)
+
+    def get_meta_name (self, name):
+        L = self.head.xpath (".//meta[@name='%s']/@content" % name)
+        if len(L) == 1: return L[0]
+        s = '<meta name="%s" ... /> elements' % name
+        if len(L) == 0: raise RuntimeError ('Not found: ' + s)
+        if len(L)  > 1: raise RuntimeError ('Found multiple: ' + s)
+
+    # @todo rewrite get_meta_* to use this
+#    def get_meta (self, attribute, value):
+#        """Return the content attribute of all <meta> elements where `attribute` matches `value`"""
+#        query = "/html/head/meta[@%s='%s']/@content" % (attribute, value)
+#        return self.tree.xpath (query)

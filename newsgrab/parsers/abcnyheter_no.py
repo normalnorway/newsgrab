@@ -36,6 +36,5 @@ class Parser (OpenGraphParser):
         meta['title'] = self.clean_title (meta['title'])
 
         datestr = self.get_meta_property ('article:published_time')
-        datestr += 'Z'  # hack since parse_iso_date don't handle
         meta['date'] = self.parse_iso_date (datestr)
         return meta

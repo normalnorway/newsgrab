@@ -27,12 +27,8 @@ COUNT   ITEMPROP
 Description  : Missing!
 '''
 
-from datetime import timedelta
 from . import OpenGraphParser
-from . import is_dst
 
-
-# get_meta_by_name helper? @see get_meta_prop
 
 class Parser (OpenGraphParser):
     def parse (self):
@@ -41,7 +37,7 @@ class Parser (OpenGraphParser):
         if meta['title'].endswith (' - Aftenposten'):
             meta['title'] = meta['title'][0:-14]
 
-        meta['description'] = self.head.xpath(".//meta[@name='og:description']/@content")[0]
+        meta['description'] = self.get_meta_name ('og:description')
 
         # INFO:newsgrab.parsers:Found multiple datePublished; do not know howto handle
 
@@ -50,9 +46,6 @@ class Parser (OpenGraphParser):
         assert L[0] == L[1]
         datestr = L[0]
         assert datestr[-1] == 'Z'
-
-        dt = self.parse_iso_date (datestr)
-        meta['date'] = dt + timedelta (hours = 2 if is_dst(dt) else 1)
-        # Note: datePublised is in zulu time; must convert to local time.
+        meta['date'] = self.parse_iso_date (datestr)
 
         return meta
