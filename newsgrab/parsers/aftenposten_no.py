@@ -7,6 +7,8 @@
 Note: This is not picked up be the open graph parser
 <meta name="og:description" content="...">
 
+Note: NO-BREAK SPACE (0xA0) is used.
+
 @todo remove query part of image url?
 image = http://www.aftenposten.no/incoming/article7605814.ece/ALTERNATES/w2048c169/afp000694277.jpg?updated=160620141138
 
@@ -36,11 +38,9 @@ class Parser (OpenGraphParser):
     title_postfix = ' - Aftenposten'
 
     def parse (self):
-        meta = super(Parser,self).parse()
+        meta = super(Parser,self).parse (parse_date=False)
 
         meta['description'] = self.get_meta_name ('og:description')
-
-        # INFO:newsgrab.parsers:Found multiple datePublished; do not know howto handle
 
         L = self.body.xpath(".//time[@itemprop='datePublished']/@datetime")
         assert len(L) == 2

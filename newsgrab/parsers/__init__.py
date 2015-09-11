@@ -12,8 +12,11 @@ def _dict_to_unicode (data, charset):
     out = {}
     for key,val in data.iteritems():
         ukey = unicode (key, charset)
+        #if isinstance (val, str):
         if type(val) == str:
             uval = unicode (val, charset)
+        elif isinstance (val, etree._ElementUnicodeResult):
+            uval = unicode (val)    # needed?
         else:
             uval = val
         out[ukey] = uval
@@ -175,15 +178,15 @@ class OpenGraphParser (ParserBase):
 
     def _parse (self):
         meta = self.parse()
-        if self.title_postfix:
-            if meta['title'].endswith (self.title_postfix):
-                meta['title'] = meta['title'][0:-len(self.title_postfix)]
+#        if self.title_postfix:
+#            if meta['title'].endswith (self.title_postfix):
+#                meta['title'] = meta['title'][0:-len(self.title_postfix)]
         if self.use_canonical_url:
             meta['url'] = self.get_canonical_link ()
         return meta
 
 
-    def parse (self):
+    def parse (self, parse_date=True):
         """Parse OpenGraph properties and return as dict"""
         super(OpenGraphParser,self).parse()
         L = self.tree.xpath ('/html/head/meta[starts-with(@property,"og:")]')
@@ -198,6 +201,13 @@ class OpenGraphParser (ParserBase):
 
         if meta.has_key ('type') and meta['type'] != 'article':
             logger.info ('og:type = %s for: %s', meta['type'], self.url)
+
+        if self.title_postfix:
+            if meta['title'].endswith (self.title_postfix):
+                meta['title'] = meta['title'][0:-len(self.title_postfix)]
+
+        if not parse_date:
+            return meta
 
         # Try to parse 'datePublished'
         # @todo move to parse.date()?

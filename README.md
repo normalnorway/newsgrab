@@ -66,7 +66,7 @@ manual work is required.
 
 2. Add a test url to `urls_to_test` in `tests.py`
 
-3. `python tests.py init`
+3. `python tests.py fixture`
 
 4. `python tests.py -v`
 
