@@ -6,10 +6,5 @@ sudo: false
 install:
   - pip install -r requirements.txt
 
-# just testing. encoding trouble
-before_script:
-  - locale ; true
-  - locale charmap
-
 script:
   - python tests.py -v

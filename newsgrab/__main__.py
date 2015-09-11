@@ -3,6 +3,8 @@ Can use as command line interface:
 $ python -m newsgrab <url>
 """
 
+# XXX Put code inside main()
+
 import sys
 import textwrap
 import logging

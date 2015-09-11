@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
+#from setuptools import setup
 
 setup (
     name = 'NewsGrab',
-    version = '0.1.0',
+    version = '0.1.dev',
     description = 'Fetches meta-data for Norwegian news articles',
     #long_description = open ('README.md').read(),
     license = 'LICENSE.txt',
