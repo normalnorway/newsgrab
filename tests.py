@@ -15,6 +15,7 @@ urls_to_test = [
     'http://www.nrk.no/ytring/to-historier-om-ruspolitikk-1.11585406',
     'http://www.ba.no/apen-om-eget-rusmisbruk/s/5-8-146941',
     'http://www.nordlys.no/hasj/narkotika/sosiale-medier/jeg-skulle-onske-at-flere-tok-avstand-fra-dette/s/5-34-237040',
+    'http://www.osloby.no/nyheter/krim/Lagret-90-kilo-hasj-og-5_9-kilo-kokain-i-leilighet-pa-Romsas-8142565.html',
 ]
 
 import os
@@ -87,20 +88,10 @@ for url in urls_to_test:
 
 
 if __name__ == '__main__':
-    unittest.main()
-
-
-exit(0)
-
-
-# @todo must ignore unknown args so this works: python tests.py -v
-if __name__ == '__main__':
     import sys
-    if len(sys.argv) == 1:
-        print 'fixme'
-    elif sys.argv[1] in ['help', '--help', '-h']:
-        print 'usage: [help|init]'
-    elif sys.argv[1] == 'init':
-        create_testdata()
-    else:
-        print 'syntax error'
+    if not (len(sys.argv)>1 and sys.argv[1]=='fixture'):
+        unittest.main()
+        exit(0)
+    create_testdata()
+    # @todo possible to update fixtures (overwrite)
+    # @todo possible to only create/update one fixture
