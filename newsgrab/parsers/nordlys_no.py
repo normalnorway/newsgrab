@@ -49,11 +49,10 @@ COUNT   ITEMPROP
 from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
+    use_canonical_url = True
 
     def parse (self):
         meta = super(Parser,self).parse()
-
-        meta['url'] = self.get_canonical_link ()
 
         datestr = self.get_meta_property ('article:published_time')
         assert datestr[-1] == 'Z'

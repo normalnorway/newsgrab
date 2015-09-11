@@ -159,6 +159,9 @@ class OpenGraphParser (ParserBase):
     # Strip this from title if set
     title_postfix = None
 
+    # Prefer <link rel="canonical"> over og:url
+    use_canonical_url = False
+
     def itemprop (self, key, elem=None):
         if elem:
             expr = "//%s[@itemprop='%s']/text()" % (elem, key)
@@ -175,6 +178,8 @@ class OpenGraphParser (ParserBase):
         if self.title_postfix:
             if meta['title'].endswith (self.title_postfix):
                 meta['title'] = meta['title'][0:-len(self.title_postfix)]
+        if self.use_canonical_url:
+            meta['url'] = self.get_canonical_link ()
         return meta
 
 

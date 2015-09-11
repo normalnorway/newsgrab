@@ -25,19 +25,17 @@ from . import OpenGraphParser
 # @todo improve datePublished in parse(); then can drop date handling here?
 
 class Parser (OpenGraphParser):
+    # og:url has (unwanted) query parameters appended, so don't use
+    use_canonical_url = True
 
     def parse (self):
         meta = super(Parser,self).parse()
-        body = self.body
-
-        # @todo can set OpenGraph.use_canonical instead?
-        # og:url has (unwanted) query parameters appended, so don't use
-        meta['url'] = self.get_canonical_link ()
 
         datestr = self.get_meta_property ('article:published_time')
         assert datestr[-1] == 'Z'
         meta['date'] = self.parse_iso_date (datestr)
 
+#        body = self.body
 #        L = body.xpath (".//main/article[@itemtype='http://schema.org/Article']")
 #        assert len(L) == 1
 #        article = L.pop()
