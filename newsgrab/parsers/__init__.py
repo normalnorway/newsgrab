@@ -59,6 +59,8 @@ class ParserBase (object):
     body = None     # lxml.etree._Element of html body
     meta = None     # cached metadata
 
+#    charset = 'utf-8'
+
     def __init__ (self, url=None):
         """If url is None then set_html() must be called"""
         if url: self.set_url (url)
@@ -73,6 +75,7 @@ class ParserBase (object):
         self.tree = etree.HTML (data)
         lst = [n for n in self.tree if n.tag in ('head', 'body')]
         self.head, self.body = lst[0], lst[1]
+        self.meta = None    # clear cache
 
     #def set_html_file (self, filename):
 
@@ -113,7 +116,8 @@ class ParserBase (object):
     def get (self):
         """Get metadata as a dict"""
         if not self.meta:
-            meta = self.parse()
+            #meta = self.parse()
+            meta = self._parse()    # XXX
             #del self.tree, self.head, self.body
             #self.tree = None    # release memory
             self.tree = self.head = self.body = None    # release memory
@@ -152,6 +156,9 @@ class OpenGraphParser (ParserBase):
 
     supported = False
 
+    # Strip this from title if set
+    title_postfix = None
+
     def itemprop (self, key, elem=None):
         if elem:
             expr = "//%s[@itemprop='%s']/text()" % (elem, key)
@@ -161,6 +168,14 @@ class OpenGraphParser (ParserBase):
         data = self.tree.xpath (expr)
         if len(data) > 1: logger.warn ('More than one match. Ignoring the rest!')
         return data[0].strip()
+
+
+    def _parse (self):
+        meta = self.parse()
+        if self.title_postfix:
+            if meta['title'].endswith (self.title_postfix):
+                meta['title'] = meta['title'][0:-len(self.title_postfix)]
+        return meta
 
 
     def parse (self):

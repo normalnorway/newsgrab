@@ -15,6 +15,7 @@ Date example: Publisert 5. mars 2015
 from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
+    title_postfix = ' - dagsavisen.no'
 
     def parse_date (self):
         expr = "//article[@role='article']/div[@class='byline']//div[@class='time']/span/text()"
@@ -27,6 +28,4 @@ class Parser (OpenGraphParser):
     def parse (self):
         meta = super(Parser,self).parse()
         meta['date'] = self.parse_date()
-        if meta['title'].endswith ('- dagsavisen.no'):
-            meta['title'] = meta['title'][:-16] # remove branding
         return meta

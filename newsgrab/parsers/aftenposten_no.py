@@ -29,13 +29,14 @@ Description  : Missing!
 
 from . import OpenGraphParser
 
+# Note: some titles is prefixed with author name: | Nils August Andresen
 
 class Parser (OpenGraphParser):
+
+    title_postfix = ' - Aftenposten'
+
     def parse (self):
         meta = super(Parser,self).parse()
-
-        if meta['title'].endswith (' - Aftenposten'):
-            meta['title'] = meta['title'][0:-14]
 
         meta['description'] = self.get_meta_name ('og:description')
 
