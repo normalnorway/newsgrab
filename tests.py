@@ -17,6 +17,7 @@ urls_to_test = [
     'http://www.nordlys.no/hasj/narkotika/sosiale-medier/jeg-skulle-onske-at-flere-tok-avstand-fra-dette/s/5-34-237040',
     'http://www.osloby.no/nyheter/krim/Lagret-90-kilo-hasj-og-5_9-kilo-kokain-i-leilighet-pa-Romsas-8142565.html',
     'http://nettavisen.no/artikkel/8487912',
+    'http://www.adressa.no/nyheter/politikk/valget/article11546150.ece',
 ]
 
 import os
