@@ -18,6 +18,7 @@ urls_to_test = [
     'http://www.osloby.no/nyheter/krim/Lagret-90-kilo-hasj-og-5_9-kilo-kokain-i-leilighet-pa-Romsas-8142565.html',
     'http://nettavisen.no/artikkel/8487912',
     'http://www.adressa.no/nyheter/politikk/valget/article11546150.ece',
+    'http://www.itromso.no/nyheter/article10796258.ece',
 ]
 
 import os
