@@ -74,7 +74,7 @@ manual work is required.
    ```
    git add newsgrab/parser/<example_no>.py
    git add fixture/<example_no>.json
-   git commit -m 'new parser: <example_no>
+   git commit -m 'new parser: <example_no>'
    git push
    ```
 

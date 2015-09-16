@@ -3,6 +3,8 @@
 from distutils.core import setup
 #from setuptools import setup
 
+# UserWarning: Normalizing '0.1.dev' to '0.1.dev0' normalized_version,
+
 setup (
     name = 'NewsGrab',
     version = '0.1.dev',

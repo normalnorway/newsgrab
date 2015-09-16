@@ -12,6 +12,8 @@ urls_to_test = [
     'http://forskning.no/2014/10/hvor-farlig-er-cannabisbruk',
     'http://www.vg.no/forbruker/helse/helse-og-medisin/professor-om-cannabis-behandling-ingen-sikker-effekt/a/23383207/',
     'http://www.dagbladet.no/2015/01/30/kultur/kulturnytt/cannabis/narkotika/hasj/37448273/',
+    # This db article uses differente date parsing code. @todo test both
+    #'http://www.dagbladet.no/2015/01/16/kultur/meninger/debatt/37198268/',
     'http://www.nrk.no/ytring/to-historier-om-ruspolitikk-1.11585406',
     'http://www.ba.no/apen-om-eget-rusmisbruk/s/5-8-146941',
     'http://www.nordlys.no/hasj/narkotika/sosiale-medier/jeg-skulle-onske-at-flere-tok-avstand-fra-dette/s/5-34-237040',
