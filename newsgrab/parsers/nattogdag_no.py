@@ -22,6 +22,7 @@ from . import OpenGraphParser
 class Parser (OpenGraphParser):
     title_postfix = ' - NATT&DAG'
 
+    # charset gets screwed up for some reason. this hack fixes it
     def _create_etree (self, data):
         parser = etree.HTMLParser (encoding='utf-8')
         return etree.HTML (data, parser=parser)
@@ -32,6 +33,8 @@ class Parser (OpenGraphParser):
         datestr = self.get_meta_property ('article:published_time')
         meta['date'] = self.parse_iso_date (datestr)
 
-        meta['url'] = self.url  # XXX
+        meta['url'] = self.url  # og:url is missing
+
+        del meta['updated_time']    # tmp hack
 
         return meta
