@@ -88,10 +88,14 @@ class ParserBase (object):
         self.url = url
 
     def set_html (self, data):
-        self.tree = etree.HTML (data)
+        #self.tree = etree.HTML (data)
+        self.tree = self._create_etree (data)
         lst = [n for n in self.tree if n.tag in ('head', 'body')]
         self.head, self.body = lst[0], lst[1]
         self.meta = None    # clear cache
+
+    def _create_etree (self, data):
+        return etree.HTML (data)
 
     #def set_html_file (self, filename):
 
@@ -110,7 +114,7 @@ class ParserBase (object):
     def parse (self):
         if self.tree is None:
             raise Exception ('No data to parse. Must call set_url(), set_html() or pass url to constructor.')
-        self.charset = self._detect_charset()
+        self.charset = self._detect_charset() # q: can drop this?
 
     ## HELPERS ##
 

@@ -21,6 +21,7 @@ urls_to_test = [
     'http://nettavisen.no/artikkel/8487912',
     'http://www.adressa.no/nyheter/politikk/valget/article11546150.ece',
     'http://www.itromso.no/nyheter/article10796258.ece',
+    'http://www.nattogdag.no/2015/09/portugals-ruspolitikk-er-ikke-perfekt-men-den-funker/',
 ]
 
 import os
