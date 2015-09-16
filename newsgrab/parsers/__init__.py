@@ -24,19 +24,32 @@ def _dict_to_unicode (data, charset):
 
 
 # Helper to parse norwegian dates
-# @todo handle abbreviated month names
 # @todo handle seconds in time part (and better error handling)
-_RE_DATETIME_PARSE = re.compile (r'(\d{1,2})\. ([a-zA-Z]+) (\d{4})(.*)')
-_MONTH_NAMES = (None, 'januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember')
-_ABMONTH_NAMES = (None, 'jan.', 'feb.', 'mars', 'apr.', 'mai', 'juni', 'juli', 'aug.', 'sep.', 'okt.', 'sep.', 'nov.', 'des.')
+_RE_DATETIME_PARSE = re.compile (r'(\d{1,2})\. ([a-zA-Z]+) (\d{4}) ?(.*)$')
+_MONTH_NAMES = ('januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember')
+_MONTH_NAMES_ABBR = ('jan.', 'feb.', 'mars', 'apr.', 'mai', 'juni', 'juli', 'aug.', 'sep.', 'okt.', 'sep.', 'nov.', 'des.')
+_MONTH_NAMES_SHORT = [name[:3] for name in _MONTH_NAMES]
+
+
+def _parse_month_name (name):
+    """Parse Norwegian month name"""
+    #if name in _MONTH_NAMES_SHORT: return _MONTH_NAMES_SHORT.index (month_name)
+    name = name.lower()
+    try: return _MONTH_NAMES.index (name) + 1
+    except ValueError: pass
+    try: return _MONTH_NAMES_SHORT.index (name) + 1
+    except ValueError: pass
+    try: return _MONTH_NAMES_ABBR.index (name) + 1
+    except ValueError: raise ValueError ('Can not parse month name: ' + name)
+
 
 def _parse_norwegian_datetime (datestr):
     """Parse datetime using Norwegian month names"""
     match = _RE_DATETIME_PARSE.match (datestr)
-    tp = match.groups()[0:-1]   # split of last part (time)
+    tp = match.groups()[:-1]   # split of last part (time)
     try:
         day = int(tp[0])
-        month = _MONTH_NAMES.index(tp[1].lower())
+        month = _parse_month_name (tp[1])
         year = int(tp[2])
     except ValueError as ex:
         raise ValueError ('Can not parse date: %s [%s]' % (' '.join(tp), str(ex)))
