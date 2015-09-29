@@ -43,8 +43,9 @@ class Parser (OpenGraphParser):
         meta['description'] = self.get_meta_name ('og:description')
 
         L = self.body.xpath(".//time[@itemprop='datePublished']/@datetime")
-        assert len(L) == 2
-        assert L[0] == L[1]
+        assert len(L) in (1,2)
+        if len(L) == 2:
+            assert L[0] == L[1]
         datestr = L[0]
         assert datestr[-1] == 'Z'
         meta['date'] = self.parse_iso_date (datestr)
