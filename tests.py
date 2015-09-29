@@ -2,6 +2,8 @@
 Simple test system.
 
 Run parser on set of urls and compares to existing data.
+
+$ python tests.py MyTestCase.test_nattogdag_no
 """
 
 # Note: Can one have one url per domain. @todo fix that
