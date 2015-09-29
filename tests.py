@@ -26,6 +26,24 @@ urls_to_test = [
     'http://www.nattogdag.no/2015/09/portugals-ruspolitikk-er-ikke-perfekt-men-den-funker/',
 ]
 
+# These urls triggered bugs in the parsers. The bugs are fixed, but also
+# tests these urls.
+#http://www.dagbladet.no/2015/01/08/kultur/meninger/debatt/kronikk/cannabis/37073467/
+#http://www.dagbladet.no/2015/01/06/nyheter/innenriks/utenriks/cannabis/marihuana/36978662/
+#http://www.abcnyheter.no/nyheter/2015/07/15/194410653/legalisering-vil-gi-faerre-dodsfall
+#http://www.aftenposten.no/fakta/innsikt/Snuser-pa-muligheten-for-a-legalisere-marihuana-7983917.html
+#http://www.dagbladet.no/2014/02/06/kultur/meninger/hovedkronikk/31668467/
+#http://www.dagbladet.no/2014/02/27/nyheter/samfunn/politikk/erna_solberg/hoyre/32065499/
+#http://www.dagbladet.no/2015/07/15/kultur/debatt/meninger/cannabis/kronikk/40147871/
+#http://www.aftenposten.no/meninger/kronikker/Kronikk-av-Willy-Pedersen-Ruspolitisk-regjeringsskifte-i-2017-7931465.html
+#http://www.aftenposten.no/meninger/kronikker/Etterlyst-En-kunnskapsbasert-ruspolitikk-7971175.html
+#http://www.aftenposten.no/helse/Norge-har-flest-overdosedodsfall-i-Norden-7925879.html
+#http://www.abcnyheter.no/reise/2015/02/25/218756/jamaica-opphever-marihuanaforbud
+#http://www.abcnyheter.no/nyheter/2014/01/20/191569/obama-marihuana-ikke-farligere-enn-alkohol
+#http://www.abcnyheter.no/livet/2014/10/21/210209/cannabis-og-hasj-er-farligere-na-enn-foer
+#http://www.abcnyheter.no/nyheter/2012/11/04/162048/lege-vil-starte-cannabisbehandling-i-norge
+
+
 import os
 BASE = os.path.dirname (__file__)
 DATADIR = os.path.join (BASE, 'fixture')
