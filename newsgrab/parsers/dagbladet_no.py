@@ -34,7 +34,7 @@ class Parser (OpenGraphParser):
         assert len(L)==1
         strong = L[0]
         assert strong.tag == 'strong'
-        datestr = strong.text[:-1]
+        datestr = strong.text[:-1].strip()
         timestr = strong.tail
         timestr = timestr.replace('av', '').replace('kl.','').strip()
         return self.parse_date_no (datestr + ' ' + timestr)
