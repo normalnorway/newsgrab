@@ -226,6 +226,12 @@ class OpenGraphParser (ParserBase):
         if not parse_date:
             return meta
 
+        # Try to parse article:published_time
+        datestr = self.get_meta_property ('article:published_time')
+        if datestr:
+            meta['date'] = self.parse_iso_date (datestr)
+            return meta
+
         # Try to parse 'datePublished'
         # @todo move to parse.date()?
         L = self.tree.xpath ("//*[@itemprop='datePublished']/text()")
