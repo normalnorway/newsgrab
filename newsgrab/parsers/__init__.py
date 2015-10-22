@@ -157,7 +157,10 @@ class ParserBase (object):
             #del self.tree, self.head, self.body
             #self.tree = None    # release memory
             self.tree = self.head = self.body = None    # release memory
-            self.meta = _dict_to_unicode (meta, self.charset)
+            if hasattr (self, 'charset'):
+                self.meta = _dict_to_unicode (meta, self.charset)
+            else:
+                self.meta = meta # happens for non-opengraph parsers
         return self.meta
 
     def get_json (self):    # get_as_json
