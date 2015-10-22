@@ -13,7 +13,7 @@ def domain_to_pyid (domain):
     """Convert a domain name into a valid python identifier"""
     if domain.startswith('www.'):
         domain = domain[4:]
-    return domain.replace('.', '_')
+    return domain.replace('.', '_').replace('-', '_')
 
 def domain_to_parser_id (domain):
     return domain_to_pyid (domain)
