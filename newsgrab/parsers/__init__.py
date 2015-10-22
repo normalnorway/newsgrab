@@ -129,7 +129,7 @@ class ParserBase (object):
 
     # @todo staticmethod?
     def parse_iso_date (self, datestr):
-        return parse_iso_date (datestr)
+        return parse_iso_date (datestr.strip())
 
     ## ACCESSORS ##
 
@@ -232,7 +232,15 @@ class OpenGraphParser (ParserBase):
             meta['date'] = self.parse_iso_date (datestr)
             return meta
 
-        # Try to parse 'datePublished'
+        # Try to parse <time itemprop=datePublished datetime>
+        L = self.body.xpath ("//time[@itemprop='datePublished']/@datetime")
+        if len(L) == 1:
+            meta['date'] = self.parse_iso_date (L[0])
+            return meta
+        elif len(L) > 1:
+            logger.info ('Found multiple <time itemprop=datePublished ...>.')
+
+        # Try to parse datePublished text
         # @todo move to parse.date()?
         L = self.tree.xpath ("//*[@itemprop='datePublished']/text()")
         if len(L) == 1:
