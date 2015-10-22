@@ -134,6 +134,19 @@ class ParserBase (object):
     def parse_iso_date (self, datestr):
         return parse_iso_date (datestr.strip())
 
+    def get_meta (self, attribute, value):
+        """Return the content attribute of all <meta> elements where `attribute` matches `value`"""
+        query = "/html/head/meta[@%s='%s']/@content" % (attribute, value)
+        return self.tree.xpath (query)
+
+    def get_meta_name (self, name):
+        L = self.get_meta ('name', name)
+        if len(L) == 1: return L[0]
+        s = '<meta name="%s" ... /> elements' % name
+        if len(L) == 0: raise RuntimeError ('Not found: ' + s)
+        if len(L)  > 1: raise RuntimeError ('Found multiple: ' + s)
+
+
     ## ACCESSORS ##
 
     def get (self):
@@ -287,16 +300,4 @@ class OpenGraphParser (ParserBase):
         if len(L) == 0: return None
         if len(L) == 1: return L[0]
         raise RuntimeError ('found multiple <meta name="%s" ... /> elements' % prop_name)
-
-    def get_meta_name (self, name):
-        L = self.head.xpath (".//meta[@name='%s']/@content" % name)
-        if len(L) == 1: return L[0]
-        s = '<meta name="%s" ... /> elements' % name
-        if len(L) == 0: raise RuntimeError ('Not found: ' + s)
-        if len(L)  > 1: raise RuntimeError ('Found multiple: ' + s)
-
     # @todo rewrite get_meta_* to use this
-#    def get_meta (self, attribute, value):
-#        """Return the content attribute of all <meta> elements where `attribute` matches `value`"""
-#        query = "/html/head/meta[@%s='%s']/@content" % (attribute, value)
-#        return self.tree.xpath (query)
