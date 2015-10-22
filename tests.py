@@ -25,6 +25,7 @@ urls_to_test = [
     'http://www.itromso.no/nyheter/article10796258.ece',
     'http://www.nattogdag.no/2015/09/portugals-ruspolitikk-er-ikke-perfekt-men-den-funker/',
     'http://www.t-a.no/nyheter/article11305842.ece',
+    'http://www.bt.no/nyheter/lokalt/Narko-motstander-tatt-med-12-kilo-cannabis-3065875.html',
 ]
 
 # These urls triggered bugs in the parsers. The bugs are fixed, but also
