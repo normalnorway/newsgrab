@@ -111,6 +111,9 @@ class ParserBase (object):
         # @todo try to detect it? then must store htmldata
         #chardet.detect()
 
+    def _parse (self):
+        return self.parse()
+
     def parse (self):
         if self.tree is None:
             raise Exception ('No data to parse. Must call set_url(), set_html() or pass url to constructor.')
