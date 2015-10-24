@@ -30,7 +30,7 @@ from . import OpenGraphParser
 class Parser (OpenGraphParser):
 
     def parse (self):
-        meta = super(Parser,self).parse()
+        meta = super(Parser,self).parse(parse_date=False)
 
         lst = self.body.xpath(".//time[@class='published' and @pubdate]/@datetime")
         datestr = lst.pop()

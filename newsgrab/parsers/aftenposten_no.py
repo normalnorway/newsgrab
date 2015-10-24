@@ -40,8 +40,6 @@ class Parser (OpenGraphParser):
     def parse (self):
         meta = super(Parser,self).parse (parse_date=False)
 
-        meta['description'] = self.get_meta_name ('og:description')
-
         L = self.body.xpath(".//time[@itemprop='datePublished']/@datetime")
         assert len(L) in (1,2)
         if len(L) == 2:

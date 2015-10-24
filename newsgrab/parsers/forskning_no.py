@@ -24,7 +24,7 @@ from . import OpenGraphParser
 class Parser (OpenGraphParser):
 
     def parse (self):
-        meta = super(Parser,self).parse()
+        meta = super(Parser,self).parse(parse_date=False)
         xpath = self.body.xpath
 
         L = xpath('//div[contains(@class, "field-name-published-date")]')

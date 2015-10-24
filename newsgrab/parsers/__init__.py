@@ -1,7 +1,7 @@
 import re
 import logging
 from lxml import etree
-from datetime import datetime, timedelta
+from datetime import datetime
 from newsgrab.dateutils import parse_iso_date
 
 logger = logging.getLogger (__name__)
@@ -242,6 +242,10 @@ class OpenGraphParser (ParserBase):
             if meta['title'].endswith (self.title_postfix):
                 meta['title'] = meta['title'][0:-len(self.title_postfix)]
 
+        if 'description' not in meta:
+            try: meta['description'] = self.get_meta_name ('description')
+            except: pass
+
         if not parse_date:
             return meta
 
@@ -260,7 +264,8 @@ class OpenGraphParser (ParserBase):
             logger.info ('Found multiple <time itemprop=datePublished ...>.')
 
         # Try to parse datePublished text
-        # @todo move to parse.date()?
+        # note: code bellow is deprecated
+        #logger.warn ('deprecated date parsing code')
         L = self.tree.xpath ("//*[@itemprop='datePublished']/text()")
         if len(L) == 1:
             datestr = L[0].strip()

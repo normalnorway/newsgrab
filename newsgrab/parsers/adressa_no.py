@@ -18,10 +18,7 @@ BUG: Timezone is wrong :(
 from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
-
-    def parse (self):
-        meta = super(Parser,self).parse()
-        meta['description'] = self.get_meta_name ('description')
+    pass
 
 #        lst = self.body.xpath ('.//time[@class="published"]/@datetime')
 #        assert len(lst) == 1
@@ -30,5 +27,3 @@ class Parser (OpenGraphParser):
 
         # Note: Time zone is wrong for summer time, but don't matter
         # since it's just ignored (and assumed to be in local time).
-
-        return meta

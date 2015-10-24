@@ -40,7 +40,7 @@ class Parser (OpenGraphParser):
         return self.parse_date_no (datestr + ' ' + timestr)
 
     def parse (self):
-        meta = super(Parser,self).parse()
+        meta = super(Parser,self).parse (parse_date=False)
 
         # div#articleTools
         # div.article-date > span.date + span.time

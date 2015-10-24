@@ -26,6 +26,6 @@ class Parser (OpenGraphParser):
         return self.parse_date_no (datestr)
 
     def parse (self):
-        meta = super(Parser,self).parse()
+        meta = super(Parser,self).parse (parse_date=False)
         meta['date'] = self.parse_date()
         return meta
