@@ -27,6 +27,7 @@ urls_to_test = [
     'http://www.t-a.no/nyheter/article11305842.ece',
     'http://www.bt.no/nyheter/lokalt/Narko-motstander-tatt-med-12-kilo-cannabis-3065875.html',
     'http://pluss.vg.no/2015/10/16/2179/2179_23543040',
+    'http://www.p4.no/story.aspx?id=633306',
 ]
 
 # These urls triggered bugs in the parsers. The bugs are fixed, but also
