@@ -23,10 +23,3 @@ from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
     title_postfix = ' | ABC Nyheter'
-
-    def parse (self):
-        meta = super(Parser,self).parse()
-
-        datestr = self.get_meta_property ('article:published_time')
-        meta['date'] = self.parse_iso_date (datestr)
-        return meta

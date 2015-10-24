@@ -13,15 +13,6 @@ BUG: Timezone is wrong :(
 <div class="mainLead positiveBottom"><div class="lead">description</div></div>
 <meta name="keywords" content="comma-separated-list" />
 <meta name="author" property="article:author" content="Tiril Vik Nordeide"/>
-
-Output of probe.py:
-
-Meta    image, locale, type, title, url, site_name
-
-COUNT   ITEMPROP
-
-Date         : Missing!
-Description  : Missing!
 """
 
 from . import OpenGraphParser
@@ -29,7 +20,7 @@ from . import OpenGraphParser
 class Parser (OpenGraphParser):
 
     def parse (self):
-        meta = super(Parser,self).parse (parse_date=False)
+        meta = super(Parser,self).parse()
         meta['description'] = self.get_meta_name ('description')
 
 #        lst = self.body.xpath ('.//time[@class="published"]/@datetime')
@@ -39,7 +30,5 @@ class Parser (OpenGraphParser):
 
         # Note: Time zone is wrong for summer time, but don't matter
         # since it's just ignored (and assumed to be in local time).
-        datestr = self.get_meta_property ('article:published_time')
-        meta['date'] = self.parse_iso_date (datestr)
 
         return meta

@@ -61,8 +61,8 @@ manual work is required.
         pass
     ```
 
-   (And in this simple case a custom parser is not needed, since the
-   default is to try the OpenGraph parser.)
+   (And in this simple case a custom parser is not needed, since this
+   is the default.)
 
 2. Add a test url to `urls_to_test` in `tests.py`
 
@@ -74,6 +74,7 @@ manual work is required.
    ```
    git add newsgrab/parser/<example_no>.py
    git add fixture/<example_no>.json
+   git add tests.py
    git commit -m 'new parser: <example_no>'
    git push
    ```

@@ -28,11 +28,7 @@ class Parser (OpenGraphParser):
         return etree.HTML (data, parser=parser)
 
     def parse (self):
-        meta = super(Parser,self).parse (parse_date=False)
-
-        datestr = self.get_meta_property ('article:published_time')
-        meta['date'] = self.parse_iso_date (datestr)
-
+        meta = super(Parser,self).parse()
         meta['url'] = self.url  # og:url is missing
 
         del meta['updated_time']    # tmp hack

@@ -50,12 +50,3 @@ from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
     use_canonical_url = True
-
-    def parse (self):
-        meta = super(Parser,self).parse (parse_date=False)
-
-        datestr = self.get_meta_property ('article:published_time')
-        assert datestr[-1] == 'Z'
-        meta['date'] = self.parse_iso_date (datestr)
-
-        return meta
