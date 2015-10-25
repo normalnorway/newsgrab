@@ -29,6 +29,7 @@ urls_to_test = [
     'http://pluss.vg.no/2015/10/16/2179/2179_23543040',
     'http://www.p4.no/story.aspx?id=633306',
     'http://www.klassekampen.no/article/20151024/ARTICLE/151029898',
+    'http://www.tv2.no/a/7522532',
 ]
 
 # These urls triggered bugs in the parsers. The bugs are fixed, but also

@@ -238,6 +238,8 @@ class OpenGraphParser (ParserBase):
         if meta.has_key ('type') and meta['type'] != 'article':
             logger.info ('og:type = %s for: %s', meta['type'], self.url)
 
+        if hasattr (self, 'strip_title'):
+            self.title_postfix = self.strip_title   # alias
         if self.title_postfix:
             if meta['title'].endswith (self.title_postfix):
                 meta['title'] = meta['title'][0:-len(self.title_postfix)]
