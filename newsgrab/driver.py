@@ -39,10 +39,14 @@ class ParserFactory (object):
         urlobj = urlsplit (url)
         pyid = domain_to_parser_id (urlobj.hostname)
 
-        # Try to load from cache
-        parser = self.parsers.get (pyid, False)
-        if parser: return parser
-        # @todo what about load_url?
+        # Try to get parser instance from cache
+        try:
+            parser = self.parsers[pyid]
+            if load_url:
+                parser.set_url (url)
+            return parser
+        except KeyError:
+            pass
 
         # Try to load parser from parsers/<pyid>.py
         try:
