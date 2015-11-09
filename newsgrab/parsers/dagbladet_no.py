@@ -90,6 +90,9 @@ class Parser (OpenGraphParser):
             date = timenode.attrib['datetime']
             time = timenode.attrib['title'].split()[3][:-1]
             meta['date'] = self.parse_iso_date (date + 'T' + time)
+            # Note: og:url contains postfix (?share=<uuid>)
+            # @todo better to strip query string from og:url?
+            meta['url'] = self.url
             return meta
 
 
