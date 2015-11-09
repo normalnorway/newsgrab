@@ -131,8 +131,13 @@ class ParserBase (object):
         return _parse_norwegian_datetime (datestr)
 
     # @todo staticmethod?
+    # @todo throw on unparsable input?
     def parse_iso_date (self, datestr):
         return parse_iso_date (datestr.strip())
+
+    def parse_norwegian_date (self, datestr):
+        """Parse Norwegian datetime string (dd-mm-yyyy hh:mm)"""
+        return datetime.strptime (datestr, '%d.%m.%Y %H:%M')
 
     def get_meta (self, attribute, value):
         """Return the content attribute of all <meta> elements where `attribute` matches `value`"""
