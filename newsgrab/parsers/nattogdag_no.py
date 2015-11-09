@@ -31,6 +31,4 @@ class Parser (OpenGraphParser):
         meta = super(Parser,self).parse()
         meta['url'] = self.url  # og:url is missing
 
-        del meta['updated_time']    # tmp hack
-
         return meta
