@@ -44,6 +44,21 @@ class Parser (OpenGraphParser):
     def parse (self):
         meta = super(Parser,self).parse (parse_date=False)
 
+        if not 'title' in meta:
+            # Old articles like this:
+            # http://www.dagbladet.no/kultur/2008/01/29/525270.html
+            meta['title'] = self.get_meta_name ('title')
+            meta['description'] = self.get_meta_name ('description')
+            meta['url'] = self.url
+            # Get date from url. (Note: Can also parse from the text)
+            from urlparse import urlsplit
+            obj = urlsplit (self.url)
+            lst = obj.path.split ('/')
+            date = '-'.join (lst[2:5])
+            meta['date'] = self.parse_iso_date (date + 'T00:00')
+            return meta
+
+        # Dagbladet pluss
         L = self.body.xpath ('//time[@class="published" and @pubdate]')
         if L:
             assert len(L)==1
@@ -53,10 +68,10 @@ class Parser (OpenGraphParser):
             meta['date'] = self.parse_iso_date (date + 'T' + time)
             return meta
 
+
         # div#articleTools
         # div.article-date > span.date + span.time
         L = self.tree.xpath ("//div[@class='article-date']")
-
         if not L:
             meta['date']= self.try_parse_date()
         else:
