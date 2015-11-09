@@ -13,8 +13,19 @@ from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
 
+    def handle_nrk_video (self, meta):
+        meta['url'] = self.url
+        # XXX no way to get the date. it's populated with javascript :(
+        return meta
+
     def parse (self):
         meta = super(Parser,self).parse(parse_date=False)
+
+        # Handle nrk.no/video/
+        from urlparse import urlsplit
+        obj = urlsplit (self.url)
+        if obj.path.startswith ('/video/'):
+            return self.handle_nrk_video (meta)
 
         L = self.tree.xpath ("//article[@role='main']")
         article = L.pop()
