@@ -8,8 +8,10 @@ Date:
   <span class="time">kl.10:25</span>
 </div>
 
-probe.py:
-  Meta    title, url, image, type, site_name, description
+Date for Dagbladet pluss:
+<time datetime="2015-10-16"
+      pubdate class="published"
+      title="...">...</time>
 
 Notes:
 * Does not use html5!
@@ -41,6 +43,15 @@ class Parser (OpenGraphParser):
 
     def parse (self):
         meta = super(Parser,self).parse (parse_date=False)
+
+        L = self.body.xpath ('//time[@class="published" and @pubdate]')
+        if L:
+            assert len(L)==1
+            timenode = L[0]
+            date = timenode.attrib['datetime']
+            time = timenode.attrib['title'].split()[3][:-1]
+            meta['date'] = self.parse_iso_date (date + 'T' + time)
+            return meta
 
         # div#articleTools
         # div.article-date > span.date + span.time
