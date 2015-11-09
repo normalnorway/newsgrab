@@ -41,22 +41,46 @@ class Parser (OpenGraphParser):
         timestr = timestr.replace('av', '').replace('kl.','').strip()
         return self.parse_date_no (datestr + ' ' + timestr)
 
+    def handle_old_article (self):
+        # Old articles like this:
+        # http://www.dagbladet.no/kultur/2008/01/29/525270.html
+        meta = {}
+        meta['title'] = self.get_meta_name ('title')
+        meta['description'] = self.get_meta_name ('description')
+        meta['url'] = self.url
+
+        # Parse date
+        div = self.body.xpath ('//div[@class="published-date"]')[0]
+        s = ''.join (div.xpath('text()')).strip()   # get all text
+        lst = s.split() # torsdag 14.09.2006 kl. 16:07, oppdatert 16:34
+        date = lst[1]
+        time = lst[3][:-1]  # strip last char (comma)
+        meta['date'] = self.parse_norwegian_date (date+' '+time)
+
+        # Try to get an image
+        try:
+            div = self.body.xpath ('//div[@id="content"]')[0]
+            lst = div.xpath ('//img[@class="pano-image"]')
+            meta['image'] = lst[0].attrib['src']
+        except:
+            pass
+
+        return meta
+
+        # Get date from url. (Note: Can also parse from the text)
+#        from urlparse import urlsplit
+#        obj = urlsplit (self.url)
+#        lst = obj.path.split ('/')
+#        date = '-'.join (lst[2:5])
+#        meta['date'] = self.parse_iso_date (date + 'T00:00')
+#        return meta
+
+
     def parse (self):
         meta = super(Parser,self).parse (parse_date=False)
 
         if not 'title' in meta:
-            # Old articles like this:
-            # http://www.dagbladet.no/kultur/2008/01/29/525270.html
-            meta['title'] = self.get_meta_name ('title')
-            meta['description'] = self.get_meta_name ('description')
-            meta['url'] = self.url
-            # Get date from url. (Note: Can also parse from the text)
-            from urlparse import urlsplit
-            obj = urlsplit (self.url)
-            lst = obj.path.split ('/')
-            date = '-'.join (lst[2:5])
-            meta['date'] = self.parse_iso_date (date + 'T00:00')
-            return meta
+            return self.handle_old_article ()
 
         # Dagbladet pluss
         L = self.body.xpath ('//time[@class="published" and @pubdate]')
