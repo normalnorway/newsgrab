@@ -93,6 +93,7 @@ class Parser (OpenGraphParser):
             # Note: og:url contains postfix (?share=<uuid>)
             # @todo better to strip query string from og:url?
             meta['url'] = self.url
+            meta['description'] = self.normalize_space (meta['description'])
             return meta
 
 

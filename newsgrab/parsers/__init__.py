@@ -151,6 +151,11 @@ class ParserBase (object):
         if len(L) == 0: raise RuntimeError ('Not found: ' + s)
         if len(L)  > 1: raise RuntimeError ('Found multiple: ' + s)
 
+    def normalize_space (self, text):
+        """Compress multiple whitespaces into one"""
+        return self.normalize_space.re.sub (' ', text)
+    normalize_space.re = re.compile (r'\s+')
+
 
     ## ACCESSORS ##
 
