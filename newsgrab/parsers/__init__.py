@@ -83,9 +83,13 @@ class ParserBase (object):
 
     # @todo rename set -> load
     def set_url (self, url):
-        import urllib2
-        self.set_html (urllib2.urlopen(url).read())
         self.url = url
+        import urllib2
+        #self.set_html (urllib2.urlopen(url).read())
+        fp = urllib2.urlopen (url)
+        self.set_html (fp.read())
+#        ct = fp.headers.get('content-type')
+#        self.http_charset = ct.split(';')[1].split('=')[-1] if ct else None
 
     def set_html (self, data):
         #self.tree = etree.HTML (data)

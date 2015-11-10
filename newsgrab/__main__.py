@@ -20,10 +20,13 @@ except IndexError:
 meta = get_metadata (url)
 
 print
-print 'DATE\t',     meta['date'] if meta.has_key('date') else '(missing)'
+print 'DATE\t',     meta['date'] if 'date' in meta else '(missing)'
 print 'TITLE\t',    meta['title']
 print 'URL\t',      meta['url']
-print 'IMAGE\t',    meta['image']
+print 'IMAGE\t',    meta['image'] if 'image' in meta else '(missing)'
 print '\nSUMMARY:'
-print '\n'.join (textwrap.wrap (meta['description']))
+if 'description' in meta:
+    print '\n'.join (textwrap.wrap (meta['description']))
+else:
+    print '(missing)'
 print

@@ -25,6 +25,7 @@ class Parser (OpenGraphParser):
         datestr = date + 'T' + time
         meta['date'] = self.parse_iso_date (datestr)
 
+        #meta['paywall'] = True
         return meta
 
         # Note: Might include html in the description. Or is that just a bug?
