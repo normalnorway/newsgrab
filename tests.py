@@ -30,6 +30,7 @@ urls_to_test = [
     'http://www.p4.no/story.aspx?id=633306',
     'http://www.klassekampen.no/article/20151024/ARTICLE/151029898',
     'http://www.tv2.no/a/7522532',
+    'http://tidsskriftet.no/article/1495645',
 ]
 
 # These urls triggered bugs in the parsers. The bugs are fixed, but also
@@ -48,6 +49,7 @@ urls_to_test = [
 #http://www.abcnyheter.no/nyheter/2014/01/20/191569/obama-marihuana-ikke-farligere-enn-alkohol
 #http://www.abcnyheter.no/livet/2014/10/21/210209/cannabis-og-hasj-er-farligere-na-enn-foer
 #http://www.abcnyheter.no/nyheter/2012/11/04/162048/lege-vil-starte-cannabisbehandling-i-norge
+#http://www.aftenposten.no/dodsfall/Nekrolog-Nils-Christie-8039532.html
 
 
 import os
