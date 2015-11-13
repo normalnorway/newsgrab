@@ -50,6 +50,7 @@ urls_to_test = [
 #http://www.abcnyheter.no/livet/2014/10/21/210209/cannabis-og-hasj-er-farligere-na-enn-foer
 #http://www.abcnyheter.no/nyheter/2012/11/04/162048/lege-vil-starte-cannabisbehandling-i-norge
 #http://www.aftenposten.no/dodsfall/Nekrolog-Nils-Christie-8039532.html
+#http://www.dagsavisen.no/oslo/anlov-mathiesen-er-respektl%C3%B8s-og-kunnskapsl%C3%B8s-1.433694
 
 
 import os

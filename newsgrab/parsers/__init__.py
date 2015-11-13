@@ -7,9 +7,11 @@ from newsgrab.dateutils import parse_iso_date
 logger = logging.getLogger (__name__)
 
 
-def _dict_to_unicode (data, charset):
+#def _dict_to_unicode (data, charset):
+def _dict_to_unicode (data):
     """Converts all string objects in a dictionary to unicode"""
     out = {}
+    charset = 'ascii'
     for key,val in data.iteritems():
         ukey = unicode (key, charset)
         #if isinstance (val, str):
@@ -76,20 +78,22 @@ class ParserBase (object):
     meta = None     # cached metadata
 
 #    charset = 'utf-8'
+#    http_charset
 
     def __init__ (self, url=None):
         """If url is None then set_html() must be called"""
         if url: self.set_url (url)
 
-    # @todo rename set -> load
-    def set_url (self, url):
+    def set_url (self, url):    # rename load?
         self.url = url
         import urllib2
-        #self.set_html (urllib2.urlopen(url).read())
         fp = urllib2.urlopen (url)
+        s = fp.headers.get('content-type')
+        try:
+            self.http_charset = s.split(';')[1].split('=')[-1] if s else None
+        except IndexError:
+            pass    # note: parser must set self.charset
         self.set_html (fp.read())
-#        ct = fp.headers.get('content-type')
-#        self.http_charset = ct.split(';')[1].split('=')[-1] if ct else None
 
     def set_html (self, data):
         #self.tree = etree.HTML (data)
@@ -99,29 +103,32 @@ class ParserBase (object):
         self.meta = None    # clear cache
 
     def _create_etree (self, data):
-        return etree.HTML (data)
+        parser = etree.HTMLParser (encoding=self._get_charset())
+        return etree.HTML (data, parser=parser)
 
-    #def set_html_file (self, filename):
+    def _get_charset (self):
+        if hasattr (self, 'charset'):
+            return self.charset
+        if hasattr (self, 'http_charset'):
+            return self.http_charset
+        raise RuntimeError ('Can not detect encoding. Must set self.charset')
 
-    # Bug: will do case sensitive match for charset and http-equiv
+    # Try to parse charset from html
+    # Bug: will do case sensitive match for charset (but not http-equiv)
     def _detect_charset (self):
         charset = self.tree.xpath ("/html/head/meta[@charset]/@charset")
         if charset: return charset[0]
-        #for elem in self.tree.xpath ("/html/head/meta"):
         L = self.tree.xpath ("/html/head/meta[translate(@http-equiv,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='content-type']")
         if L: return L[0].get('content').split('=')[-1]
-        logger.warn ('Missing charset for "%s", defaulting to latin1', self.url)
-        return 'iso-8859-1' # default for html
-        # @todo try to detect it? then must store htmldata
-        #chardet.detect()
+        # Think iso-8859-1 is default for html. But utf-8 is safer these days.
+        return 'utf-8'
 
     def _parse (self):
         return self.parse()
 
     def parse (self):
         if self.tree is None:
-            raise Exception ('No data to parse. Must call set_url(), set_html() or pass url to constructor.')
-        self.charset = self._detect_charset() # q: can drop this?
+            raise RuntimeError ('No data to parse. Must call set_url(), set_html() or pass url to constructor.')
 
     ## HELPERS ##
 
@@ -134,14 +141,18 @@ class ParserBase (object):
         """Parse datetime string using Norwegian month names"""
         return _parse_norwegian_datetime (datestr)
 
-    # @todo staticmethod?
     # @todo throw on unparsable input?
-    def parse_iso_date (self, datestr):
+    @staticmethod
+    def parse_iso_date (datestr):
         return parse_iso_date (datestr.strip())
 
-    def parse_norwegian_date (self, datestr):
-        """Parse Norwegian datetime string (dd-mm-yyyy hh:mm)"""
-        return datetime.strptime (datestr, '%d.%m.%Y %H:%M')
+    @staticmethod
+    def parse_norwegian_date (datestr):
+        """Parse Norwegian datetime string (dd-mm-yyyy hh:mm[:ss])"""
+        try:
+            return datetime.strptime (datestr, '%d.%m.%Y %H:%M')
+        except ValueError:
+            return datetime.strptime (datestr, '%d.%m.%Y %H:%M:%S')
 
     def get_meta (self, attribute, value):
         """Return the content attribute of all <meta> elements where `attribute` matches `value`"""
@@ -171,10 +182,10 @@ class ParserBase (object):
             #del self.tree, self.head, self.body
             #self.tree = None    # release memory
             self.tree = self.head = self.body = None    # release memory
-            if hasattr (self, 'charset'):
-                self.meta = _dict_to_unicode (meta, self.charset)
-            else:
-                self.meta = meta # happens for non-opengraph parsers
+            #self.meta = meta
+            self.meta = _dict_to_unicode (meta)  # @todo drop
+            # convert all values to unicode? lxml only return
+            # unicode strings when needed.
         return self.meta
 
     def get_json (self):    # get_as_json
@@ -184,12 +195,6 @@ class ParserBase (object):
         return json.dumps (meta)
 
 
-
-
-# TODO:
-# - helper that checks if all vital metadata is there
-# - A tag can have multiple values, just put multiple versions of
-#   the same <meta> tag on your page.
 
 class OpenGraphParser (ParserBase):
     """Parse Open Graph protocol metadata - http://ogp.me/
@@ -206,8 +211,6 @@ class OpenGraphParser (ParserBase):
     be available: http://ogp.me/#type_article
     Unfortunately these are not well supported by Norwegian newspapers.
     """
-
-    supported = False
 
     # Strip this from title if set
     title_postfix = None
@@ -241,7 +244,6 @@ class OpenGraphParser (ParserBase):
         super(OpenGraphParser,self).parse()
         L = self.tree.xpath ('/html/head/meta[starts-with(@property,"og:")]')
         if not L: return {}
-        self.supported = True
 
         meta = {}
         for elem in L:
@@ -308,9 +310,6 @@ class OpenGraphParser (ParserBase):
         assert datestr
         return datetime.strptime (datestr, fmt)
         # Note: %T is not supported in Python :(
-
-    def is_supported (self):
-        return self.is_supported
 
     ## Helpers available for parsers
 

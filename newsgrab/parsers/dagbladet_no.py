@@ -26,6 +26,7 @@ Other usefull elements:
 from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
+    charset = 'iso-8859-1'
 
     # <p class="article-byline-category">Publisert  den <strong>16. jan 2015,</strong> kl. 07:00 av</p>
     def try_parse_date (self):

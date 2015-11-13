@@ -22,13 +22,7 @@ from . import OpenGraphParser
 class Parser (OpenGraphParser):
     title_postfix = ' - NATT&DAG'
 
-    # charset gets screwed up for some reason. this hack fixes it
-    def _create_etree (self, data):
-        parser = etree.HTMLParser (encoding='utf-8')
-        return etree.HTML (data, parser=parser)
-
     def parse (self):
         meta = super(Parser,self).parse()
         meta['url'] = self.url  # og:url is missing
-
         return meta

@@ -25,21 +25,10 @@ class Parser (OpenGraphParser):
             html = GzipFile (fileobj=buf).read()
         else:
             html = fp.read()
-
         ct = fp.headers.get('content-type')
         self.http_charset = ct.split(';')[1].split('=')[-1]
-
         self.set_html (html)
         self.url = url
-
-
-    def _create_etree (self, data):
-        from lxml import etree
-        parser = etree.HTMLParser (encoding='utf-8')
-        return etree.HTML (data, parser=parser)
-
-    def _detect_charset (self):
-        return self.http_charset
 
 
     def parse (self):
@@ -62,5 +51,6 @@ class Parser (OpenGraphParser):
         obj = urlparse.urlsplit (url)
         meta['image'] = urlparse.urljoin (url, obj.path)
         # @todo create helper: url_remove_querystring / clean_url
+        # better way: url = url[:url.find('?')]
 
         return meta
