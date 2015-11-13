@@ -2,13 +2,8 @@ Norwegian news grabber
 ======================
 
 [![Code Climate](https://codeclimate.com/github/normalnorway/newsgrab/badges/gpa.svg)](https://codeclimate.com/github/normalnorway/newsgrab)
-
-<!-- landscape.io is down
 [![Code Health](https://landscape.io/github/normalnorway/newsgrab/master/landscape.svg?style=flat)](https://landscape.io/github/normalnorway/newsgrab/master)
--->
-<!-- code works, but tests are failing. character encoding issues
 [![Build Status](https://travis-ci.org/normalnorway/newsgrab.svg?branch=master)](https://travis-ci.org/normalnorway/newsgrab)
--->
 
 *Note: This is work in progress, but used in production. Consider it beta.*
 
