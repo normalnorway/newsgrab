@@ -20,8 +20,12 @@ class Parser (OpenGraphParser):
     def parse_date (self):
         expr = "//article[@role='article']/div[@class='byline']//div[@class='time']/span/text()"
         tmp = self.tree.xpath (expr)
-        assert len(tmp)==1
-        datestr = tmp[0].strip()
+        try:
+            datestr = tmp[0].strip()
+            assert len(tmp)==1
+        except IndexError:
+            tmp = self.tree.xpath ("//article[@role='article']//time/text()")
+            datestr = ''.join (tmp).strip()
         datestr = datestr.split(' ', 1)[-1]     # remove first word
         return self.parse_date_no (datestr)
 
