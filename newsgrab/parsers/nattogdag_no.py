@@ -16,7 +16,6 @@ COUNT   ITEMPROP
 Url          : Missing!   
 """
 
-from lxml import etree
 from . import OpenGraphParser
 
 class Parser (OpenGraphParser):

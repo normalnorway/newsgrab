@@ -28,8 +28,3 @@ class Parser (OpenGraphParser):
             datestr = ''.join (tmp).strip()
         datestr = datestr.split(' ', 1)[-1]     # remove first word
         return self.parse_date_no (datestr)
-
-    def parse (self):
-        meta = super(Parser,self).parse (parse_date=False)
-        meta['date'] = self.parse_date()
-        return meta

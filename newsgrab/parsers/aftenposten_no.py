@@ -22,9 +22,7 @@ class Parser (OpenGraphParser):
 
     title_postfix = ' - Aftenposten'
 
-    def parse (self):
-        meta = super(Parser,self).parse (parse_date=False)
- 
+    def parse_date (self):
         L = self.body.xpath(".//time[@itemprop='datePublished']/@datetime")
         if L:
             assert len(L) in (1,2)
@@ -35,6 +33,4 @@ class Parser (OpenGraphParser):
             L = self.body.xpath(".//time[@class='published']/@datetime")
             datestr = L[0].replace ('\n', '')
 
-        meta['date'] = self.parse_iso_date (datestr)
-
-        return meta
+        return self.parse_iso_date (datestr)

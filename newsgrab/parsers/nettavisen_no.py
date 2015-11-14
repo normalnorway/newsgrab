@@ -25,9 +25,7 @@ from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
 
-    def parse (self):
-        meta = super(Parser,self).parse (parse_date=False)
-
+    def parse_date (self):
         # Nettavisen bug: cXenseParse:recs:publishtime has zulu time zone
         # wrongly added. Fix: Remove final Z so it's parsed as localtime.
 #        datestr = self.get_meta_name ('cXenseParse:recs:publishtime')
@@ -38,6 +36,4 @@ class Parser (OpenGraphParser):
         lst = self.body.xpath ('.//time[@class="time_published"]/@datetime')
         assert len(lst)==1
         datestr = lst[0]
-        meta['date'] = self.parse_iso_date (datestr)
-
-        return meta
+        return self.parse_iso_date (datestr)

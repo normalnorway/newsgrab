@@ -31,16 +31,19 @@ class Parser (OpenGraphParser):
         self.url = url
 
 
+    def parse_date (self):
+        expr = '//section[@id="content"]/aside[@id="ifooter"]/div[@class="meta"]/a[1]'
+        node = self.body.xpath (expr)[0]
+        lst = node.text.split()     # Nr. 5 -  1. mars 2007
+        datestr = ' '.join (lst[-3:])
+        return self.parse_date_no (datestr)
+
+
     def parse (self):
         meta = super(Parser,self).parse()
 
         p = self.body.xpath ('//article/div[@id="sammendrag"]/p[1]')[0]
         meta['description'] = ''.join (p.itertext())
-
-        node = self.body.xpath ('//section[@id="content"]/aside[@id="ifooter"]/div[@class="meta"]/a[1]')[0]
-        lst = node.text.split()     # Nr. 5 -  1. mars 2007
-        datestr = ' '.join (lst[-3:])
-        meta['date'] = self.parse_date_no (datestr)
 
         # og:image has an random unique id appended:
         # http://tidsskriftet.no/image/currentcover.jpg?cache=<random-id>

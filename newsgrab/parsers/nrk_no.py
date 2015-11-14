@@ -12,20 +12,18 @@ INFO:newsgrab.parsers:Found multiple datePublished; do not know howto handle
 from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
+    _video = False
 
+    # http://www.nrk.no/video/PS*191550
     def handle_nrk_video (self, meta):
+        self._video = True
         meta['url'] = self.url
         # XXX no way to get the date. it's populated with javascript :(
         return meta
 
-    def parse (self):
-        meta = super(Parser,self).parse(parse_date=False)
 
-        # Handle nrk.no/video/
-        from urlparse import urlsplit
-        obj = urlsplit (self.url)
-        if obj.path.startswith ('/video/'):
-            return self.handle_nrk_video (meta)
+    def parse_date (self):
+        if self._video: return None
 
         L = self.tree.xpath ("//article[@role='main']")
         article = L.pop()
@@ -35,5 +33,16 @@ class Parser (OpenGraphParser):
         assert len(L) == 2  # found both on start and end of article
         datestr = L[0]
 
-        meta['date'] = self.parse_iso_date (datestr)
+        return self.parse_iso_date (datestr)
+
+
+    def parse (self):
+        meta = super(Parser,self).parse()
+
+        # Handle nrk.no/video/
+        from urlparse import urlsplit
+        obj = urlsplit (self.url)
+        if obj.path.startswith ('/video/'):
+            return self.handle_nrk_video (meta)
+
         return meta

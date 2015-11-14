@@ -23,8 +23,7 @@ from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
 
-    def parse (self):
-        meta = super(Parser,self).parse(parse_date=False)
+    def parse_date (self):
         xpath = self.body.xpath
 
         L = xpath('//div[contains(@class, "field-name-published-date")]')
@@ -39,6 +38,4 @@ class Parser (OpenGraphParser):
         # {'class': 'group-metainfo field-group-html-element'}
 
         datestr = node.xpath("div/div")[0].text.strip()
-        meta['date'] = self.strptime (datestr, '%d.%m %Y %H:%M')
-
-        return meta
+        return self.strptime (datestr, '%d.%m %Y %H:%M')

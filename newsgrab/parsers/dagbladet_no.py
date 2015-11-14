@@ -78,7 +78,7 @@ class Parser (OpenGraphParser):
 
 
     def parse (self):
-        meta = super(Parser,self).parse (parse_date=False)
+        meta = super(Parser,self).parse()
 
         if not 'title' in meta:
             return self.handle_old_article ()
