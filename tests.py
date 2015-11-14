@@ -52,6 +52,7 @@ urls_to_test = [
 #http://www.aftenposten.no/dodsfall/Nekrolog-Nils-Christie-8039532.html
 #http://www.dagsavisen.no/oslo/anlov-mathiesen-er-respektl%C3%B8s-og-kunnskapsl%C3%B8s-1.433694
 #http://www.nrk.no/video/PS*191550
+#http://www.bt.no/meninger/kommentar/Mathias_Fischer/Cannabis-i-Canada-3463151.html
 
 
 import os
