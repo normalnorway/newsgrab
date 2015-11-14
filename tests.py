@@ -32,6 +32,7 @@ urls_to_test = [
     'http://www.tv2.no/a/7522532',
     'http://tidsskriftet.no/article/1495645',
     'http://www.vl.no/nyhet/oslo-ut-mot-egen-grunnlegger-1.435307',
+    'http://www.minervanett.no/de-etablertes-definisjonsmakt/',
 ]
 
 # These urls triggered bugs in the parsers. The bugs are fixed, but also
