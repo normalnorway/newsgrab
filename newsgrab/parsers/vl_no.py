@@ -1,8 +1,10 @@
-""" vl.no -- Vaart land. En forlengelse av KrFs kommunikasjonsavdeling? """
+# encoding: utf-8
+""" vl.no – Vårt land. En forlengelse av KrFs kommunikasjonsavdeling? """
 
 from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
+    title_postfix = u' - Vårt Land'
 
     def parse_date (self):
         L = self.body.xpath ('//div[starts-with(@class,"byline")]//time')
