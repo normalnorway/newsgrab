@@ -84,7 +84,7 @@ class ParserBase (object):
         """If url is None then set_html() must be called"""
         if url: self.set_url (url)
 
-    def set_url (self, url):    # rename load?
+    def set_url (self, url):    # rename load_url?
         self.url = url
         import urllib2
         fp = urllib2.urlopen (url)
@@ -263,18 +263,22 @@ class OpenGraphParser (ParserBase):
 
 
     def parse_date (self):
-        # Try to parse article:published_time
+        # Try <meta article:published_time>
         datestr = self.get_meta_property ('article:published_time')
         if datestr: return self.parse_iso_date (datestr)
 
-        # Try to parse <time itemprop=datePublished datetime>
+        # Try <time itemprop=datePublished datetime>
         L = self.body.xpath ("//time[@itemprop='datePublished']/@datetime")
         if len(L) == 1:
             return self.parse_iso_date (L[0])
-        elif len(L) > 1:
-            logger.info ('Found multiple <time itemprop=datePublished ...>. Ignoring, do not know howto handle.')
+        if len(L) > 1:
+            logger.info ('Multiple <time itemprop=datePublished> found, so ignoring all. ' + self.url)
 
-        return None
+        # Try <time datetime>
+        L = self.body.xpath ("//time[@datetime]/@datetime")
+        if len(L) > 0:
+            if len(L) > 1: logger.warn ('Multiple <time datetime> found. Using the first one. ' + self.url)
+            return self.parse_iso_date (L[0])
 
 
     ## Helpers available for parsers
