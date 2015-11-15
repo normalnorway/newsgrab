@@ -26,7 +26,8 @@ Other usefull elements:
 from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
-    charset = 'iso-8859-1'
+#    charset = 'iso-8859-1'
+    fallback_charset = 'iso-8859-1' # used if no charset in Content-Type
 
     # <p class="article-byline-category">Publisert  den <strong>16. jan 2015,</strong> kl. 07:00 av</p>
     def try_parse_date (self):
@@ -82,6 +83,20 @@ class Parser (OpenGraphParser):
 
         if not 'title' in meta:
             return self.handle_old_article ()
+
+        # http://www.dagbladet.no/2015/07/02/kultur/debatt/meninger/ruspolitikk/sproyterom/39942549/
+        L = self.body.xpath ('//p[@class="article-byline-category"]')
+        try:
+            lst = L[0].xpath ('.//text()')
+            # 'Publisert  den ', ' 2. jul 2015,', ' kl. 05:00 av']
+            date = lst[1].strip()[:-1]  # strip and remove last ,
+            time = lst[2].strip().split()[1]
+            dt = self.parse_date_no (date + ' ' + time)
+            assert (dt)  # @todo better to let parse_date_no raise on error
+            meta['date']= dt
+            return meta
+        except IndexError:
+            pass
 
         # Dagbladet pluss
         L = self.body.xpath ('//time[@class="published" and @pubdate]')

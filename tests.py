@@ -55,6 +55,7 @@ urls_to_test = [
 #http://www.dagsavisen.no/oslo/anlov-mathiesen-er-respektl%C3%B8s-og-kunnskapsl%C3%B8s-1.433694
 #http://www.nrk.no/video/PS*191550
 #http://www.bt.no/meninger/kommentar/Mathias_Fischer/Cannabis-i-Canada-3463151.html
+#http://www.dagbladet.no/2015/07/02/kultur/debatt/meninger/ruspolitikk/sproyterom/39942549/
 
 
 import os

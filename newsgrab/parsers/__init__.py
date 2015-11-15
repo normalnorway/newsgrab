@@ -111,6 +111,8 @@ class ParserBase (object):
             return self.charset
         if hasattr (self, 'http_charset'):
             return self.http_charset
+        if hasattr (self, 'fallback_charset'):  # hack for dagbladet
+            return self.fallback_charset
         raise RuntimeError ('Can not detect encoding. Must set self.charset')
 
     # Try to parse charset from html
