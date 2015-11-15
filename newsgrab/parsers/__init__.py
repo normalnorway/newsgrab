@@ -278,7 +278,14 @@ class OpenGraphParser (ParserBase):
         L = self.body.xpath ("//time[@datetime]/@datetime")
         if len(L) > 0:
             if len(L) > 1: logger.warn ('Multiple <time datetime> found. Using the first one. ' + self.url)
-            return self.parse_iso_date (L[0])
+            dt = self.parse_iso_date (L[0]) # returns None on parse error
+            if dt: return dt
+            # Try this format: 2015-10-20 12:12:44 CEST
+            # @todo make parse_iso_date handle named time zones
+            lst = L[0].split()
+            if lst[-1] in ('CEST', 'CET'):
+                datestr = 'T'.join (lst[:-1])
+                return self.parse_iso_date (datestr)
 
 
     ## Helpers available for parsers
