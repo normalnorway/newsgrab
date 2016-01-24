@@ -13,3 +13,5 @@ raise RuntimeError instead of Exception
 raise ValueError
 
 Make probe.py tell if it got all data. Then don't need parser.
+
+$ pip show newsgrab   # Requires:  <-- empty
