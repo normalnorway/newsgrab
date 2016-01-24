@@ -7,4 +7,4 @@ class Parser (OpenGraphParser):
 
     def parse_date (self):
         datestr = self.get_meta_property ('rnews:datePublished')
-        return self.strptime (datestr, '%Y/%m/%d %H:%M:%S')
+        return self.strptime (datestr, '%d.%m.%Y %H:%M')
