@@ -9,7 +9,7 @@ $ python tests.py MyTestCase.test_nattogdag_no
 # Note: Can one have one url per domain. @todo fix that
 urls_to_test = [
     'http://www.aftenposten.no/nyheter/uriks/The-New-York-Times-krever-cannabislegalisering-i-hele-USA-7649727.html',
-    'http://www.abcnyheter.no/nyheter/2014/02/28/brukte-pressen-til-lokke-narko-siktet-politiker-i-felle',
+    'http://www.abcnyheter.no/nyheter/2014/02/28/194516/brukte-pressen-til-lokke-narko-siktet-politiker-i-felle',
     'http://www.dagsavisen.no/verden/mulig-vendepunkt-i-irak-1.320192',
     'http://forskning.no/2014/10/hvor-farlig-er-cannabisbruk',
     'http://www.vg.no/forbruker/helse/helse-og-medisin/professor-om-cannabis-behandling-ingen-sikker-effekt/a/23383207/',
