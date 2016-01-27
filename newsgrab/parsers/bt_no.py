@@ -6,14 +6,31 @@ UPDATE: Looks like all non-paywall artices uses this format
       pubdate="pubdate"
       datetime="2015-10-17 22:00:22 CEST">...</time>
 
+UPDATE2: And now they don't anymore
+
 Paywall:
 http://www.bt.no/meninger/kommentar/Mathias_Fischer/Cannabis-i-Canada-3463151.html
+http://www.bt.no/nyheter/lokalt/--Cannabis-pavirker-unge-hjerner-3064178.html
 """
 
 from . import OpenGraphParser
 
 class Parser (OpenGraphParser):
-    pass
+
+#    def parse (self):
+#        meta = super(Parser,self).parse()
+#        if not 'date' in meta:
+#            ...
+#        return meta
+
+    def parse_date (self):
+        dt = super (Parser, self).parse_date()
+        if dt: return dt
+        # Will always get here for paywall articles?
+        # Note: attribute keys are downcased
+        L = self.body.xpath ('//script[@id="paywallInitScript"]/@data-paywall-publishdate')
+        return self.parse_iso_date (L[0].strip())
+
 
     # Note: Only called if parse() is unable to parse the date.
     # Update: No, this will override the generic date parsing,
