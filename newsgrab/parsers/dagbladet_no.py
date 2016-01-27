@@ -13,6 +13,9 @@ Date for Dagbladet pluss:
       pubdate class="published"
       title="...">...</time>
 
+Date for leder:
+    publishDate from script-tag
+
 Notes:
 * Does not use html5!
 * Dagbladet uses a paywall. Howto detect affected articles?
@@ -25,6 +28,10 @@ Other usefull elements:
 
 from . import OpenGraphParser
 
+import re
+re_date = re.compile (r'"publishDate" : "(\d{2}\.\d{2}\.\d{4})"')
+
+
 class Parser (OpenGraphParser):
 #    charset = 'iso-8859-1'
     fallback_charset = 'iso-8859-1' # used if no charset in Content-Type
@@ -32,7 +39,7 @@ class Parser (OpenGraphParser):
     # <p class="article-byline-category">Publisert  den <strong>16. jan 2015,</strong> kl. 07:00 av</p>
     def try_parse_date (self):
         lst = self.body.xpath ('.//p[@class="article-byline-category"]')
-        assert len(lst)==1
+        if len(lst)==0: return
         assert lst[0].text.startswith ('Publisert')
         L = lst[0].getchildren()
         assert len(L)==1
@@ -81,6 +88,14 @@ class Parser (OpenGraphParser):
     def parse (self):
         meta = super(Parser,self).parse()
 
+        # http://www.dagbladet.no/2016/01/19/kultur/meninger/leder1/dbmener/rus/42792473/
+        for elem in self.head.xpath ('//script'):
+            txt = ''.join (elem.xpath ('.//text()'))
+            match = re_date.search (txt)
+            if match:
+                meta['date'] = self.parse_norwegian_date (match.group(1) + ' 00:00')
+                break
+
         if not 'title' in meta:
             return self.handle_old_article ()
 
@@ -91,9 +106,7 @@ class Parser (OpenGraphParser):
             # 'Publisert  den ', ' 2. jul 2015,', ' kl. 05:00 av']
             date = lst[1].strip()[:-1]  # strip and remove last ,
             time = lst[2].strip().split()[1]
-            dt = self.parse_date_no (date + ' ' + time)
-            assert (dt)  # @todo better to let parse_date_no raise on error
-            meta['date']= dt
+            meta['date'] = self.parse_date_no (date + ' ' + time)
             return meta
         except IndexError:
             pass
@@ -112,12 +125,14 @@ class Parser (OpenGraphParser):
             meta['description'] = self.normalize_space (meta['description'])
             return meta
 
-
         # div#articleTools
         # div.article-date > span.date + span.time
         L = self.tree.xpath ("//div[@class='article-date']")
         if not L:
-            meta['date']= self.try_parse_date()
+            if 'date' in meta:
+                return meta
+            meta['date'] = self.try_parse_date()
+            assert meta['date']
         else:
             assert len(L)==1
             elem = L[0]
