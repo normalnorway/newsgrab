@@ -32,28 +32,30 @@ class Parser (OpenGraphParser):
 
 
     def parse_date (self):
-        expr = '//section[@id="content"]/aside[@id="ifooter"]/div[@class="meta"]/a[1]'
-        node = self.body.xpath (expr)[0]
-        lst = node.text.split()     # Nr. 5 -  1. mars 2007
-        datestr = ' '.join (lst[-3:])
+        try:
+            expr = '//section[@id="content"]/aside[@id="ifooter"]/div[@class="meta"]/a[1]'
+            node = self.body.xpath (expr)[0]
+            lst = node.text.split()     # Nr. 5 -  1. mars 2007
+            datestr = ' '.join (lst[-3:])
+        except:
+            L = self.body.xpath ('//article/div[@class="nyhetdato"]/text()')
+            datestr = L[0].strip() + ' 00:00'
+            return self.parse_norwegian_date (datestr)
         return self.parse_date_no (datestr)
 
 
     def parse (self):
         meta = super(Parser,self).parse()
 
-        p = self.body.xpath ('//article/div[@id="sammendrag"]/p[1]')[0]
-        meta['description'] = ''.join (p.itertext())
+        if not 'description' in meta:
+            p = self.body.xpath ('//article/div[@id="sammendrag"]/p[1]')[0]
+            meta['description'] = ''.join (p.itertext())
 
         # og:image has an random unique id appended:
         # http://tidsskriftet.no/image/currentcover.jpg?cache=<random-id>
         # This change for each request, so must remove it so the
         # test fixture don't break.
-        import urlparse
         url = meta['image']
-        obj = urlparse.urlsplit (url)
-        meta['image'] = urlparse.urljoin (url, obj.path)
-        # @todo create helper: url_remove_querystring / clean_url
-        # better way: url = url[:url.find('?')]
+        meta['image'] = url[:url.find('?')]
 
         return meta
