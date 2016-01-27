@@ -30,6 +30,11 @@ class Parser (OpenGraphParser):
         assert L == []
 
         L = article.xpath (".//time[@itemprop='datePublished']/@datetime")
+        if len(L) == 0: # some articles uses this format (/urix/xl/)
+            L = article.xpath (".//time[@class='relative']/@datetime")
+            assert len(L)==1
+            return self.parse_iso_date (L[0])
+
         assert len(L) == 2  # found both on start and end of article
         datestr = L[0]
 
