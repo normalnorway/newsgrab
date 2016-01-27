@@ -48,8 +48,8 @@ def _parse_month_name (name):
 def _parse_norwegian_datetime (datestr):
     """Parse datetime using Norwegian month names"""
     match = _RE_DATETIME_PARSE.match (datestr)
-    tp = match.groups()[:-1]   # split of last part (time)
     try:
+        tp = match.groups()[:-1]   # split of last part (time)
         day = int(tp[0])
         month = _parse_month_name (tp[1])
         year = int(tp[2])
