@@ -25,7 +25,12 @@ class Parser (OpenGraphParser):
     def parse_date (self):
         if self._video: return None
 
-        L = self.tree.xpath ("//article[@role='main']")
+        L = self.body.xpath ("//article[@role='main']")
+        if len(L) == 0:
+            # http://www.nrk.no/nyheter/1.12667345
+            L = self.body.xpath (".//time[@class='relative bulletin-time']/@datetime")
+            return self.parse_iso_date (L[0])
+
         article = L.pop()
         assert L == []
 
