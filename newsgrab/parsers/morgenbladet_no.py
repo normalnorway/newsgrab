@@ -7,6 +7,8 @@ Have og:updated_time but not og:created_time :(
 Note: Some articles are missing fields! Like this one:
 https://morgenbladet.no/ideer/2016/01/keiserens-nye-narkotikapolitikk
 Missing: description & image
+
+The good news? Can also use this parser for articles behind paywall.
 """
 
 from . import OpenGraphParser
@@ -24,8 +26,8 @@ class Parser (OpenGraphParser):
         meta = super(Parser,self).parse()
 
         if not 'description' in meta:
-            self.main = self.body.xpath ('//section[@id="main"]')[0]
-            lst = self.main.xpath ('//div[@class="content-main"]//div[contains(@class, "field-name-body")]/p[1]//text()')
+            main = self.body.xpath ('//section[@id="main"]')[0]
+            lst = main.xpath ('//div[@class="content-main"]//div[contains(@class, "field-name-body")]/p[1]//text()')
             meta['description'] = ''.join (lst)
 
         if not 'image' in meta:

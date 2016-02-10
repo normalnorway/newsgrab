@@ -35,6 +35,8 @@ urls_to_test = [
     'http://www.minervanett.no/de-etablertes-definisjonsmakt/',
     'http://www.kjendis.no/2011/02/01/kjendis/narkotika/hasj/legalisering/norske_kjendiser/15097135/',
     'https://morgenbladet.no/2015/11/samfunnet-ma-pa-rehab-0',
+    # https://morgenbladet.no/ideer/2016/01/keiserens-nye-narkotikapolitikk     <-- missing fields
+    # https://morgenbladet.no/aktuelt/2016/02/den-prinsipielle-narkobaronen     <-- behind paywall
 ]
 
 # These urls triggered bugs in the parsers. The bugs are fixed, but also
