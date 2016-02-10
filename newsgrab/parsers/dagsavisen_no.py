@@ -1,3 +1,4 @@
+# encoding: utf-8
 """ dagsavisen.no
 
 Supports Open Graph without using the namespace.
@@ -27,4 +28,12 @@ class Parser (OpenGraphParser):
             tmp = self.tree.xpath ("//article[@role='article']//time/text()")
             datestr = ''.join (tmp).strip()
         datestr = datestr.split(' ', 1)[-1]     # remove first word
+
+        # http://www.dagsavisen.no/nyemeninger/fra-kriminalisering-via-sykeliggjøring-til-normalisering-1.683548
+        if not datestr:
+            datestr = self.body.xpath ('//div[@id="main"]//p[@class="info"]/span/@data-livestamp')[0]
+            return self.strptime (datestr, '%Y-%m-%d %H:%M:%S')
+            # Note: This is rewritten with javascript in the browser
+            #       to show: "for X dager siden"
+
         return self.parse_date_no (datestr)

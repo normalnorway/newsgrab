@@ -37,6 +37,7 @@ urls_to_test = [
     'https://morgenbladet.no/2015/11/samfunnet-ma-pa-rehab-0',
     # https://morgenbladet.no/ideer/2016/01/keiserens-nye-narkotikapolitikk     <-- missing fields
     # https://morgenbladet.no/aktuelt/2016/02/den-prinsipielle-narkobaronen     <-- behind paywall
+    # http://www.dagsavisen.no/nyemeninger/fra-kriminalisering-via-sykeliggj%C3%B8ring-til-normalisering-1.683548   <-- uses other date parsing logick (span.data-livestamp)
 ]
 
 # These urls triggered bugs in the parsers. The bugs are fixed, but also
