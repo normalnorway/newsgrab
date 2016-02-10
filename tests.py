@@ -34,6 +34,7 @@ urls_to_test = [
     'http://www.vl.no/nyhet/oslo-ut-mot-egen-grunnlegger-1.435307',
     'http://www.minervanett.no/de-etablertes-definisjonsmakt/',
     'http://www.kjendis.no/2011/02/01/kjendis/narkotika/hasj/legalisering/norske_kjendiser/15097135/',
+    'https://morgenbladet.no/2015/11/samfunnet-ma-pa-rehab-0',
 ]
 
 # These urls triggered bugs in the parsers. The bugs are fixed, but also
