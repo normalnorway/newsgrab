@@ -1,6 +1,7 @@
 """ dagbladet.no
 
-Uses OpenGraph (missing namespace).
+TODO: Force Dagbladet to switch to a sane publishing platform;
+then rewrite this mess :)
 
 Date: 
 <div class="article-date">
@@ -87,6 +88,15 @@ class Parser (OpenGraphParser):
 
     def parse (self):
         meta = super(Parser,self).parse()
+
+        try:
+            # http://www.dagbladet.no/2016/01/27/kultur/podcast/alt_du_sier_er_feil_espen/kristopher_schau/espen_thoresen/42909264/
+            main = self.body.xpath ('//div[@class="article-body"]')[0]
+            lst = main.xpath ('//div[@class="article-date"]/text()')
+            meta['date'] = self.strptime (''.join(lst), 'Opprettet %d.%m.%Y, kl. %H:%M')
+            return meta
+        except:
+            pass
 
         # http://www.dagbladet.no/2016/01/19/kultur/meninger/leder1/dbmener/rus/42792473/
         for elem in self.head.xpath ('//script'):
